@@ -229,17 +229,21 @@ private:
     vector<Driver> drivers;
     struct TrafficData
     {
-        int hour;
+        string location;
+        int year, month, day, hour;
         double factor;
 
-        TrafficData(int h, double f) : hour(h), factor(f) {}
+        TrafficData(string loc, int y, int m, int d, int h, double f)
+            : location(loc), year(y), month(m), day(d), hour(h), factor(f) {}
     };
     struct WeatherData
     {
-        int hour;
+        string location;
+        int year, month, day, hour;
         double factor;
 
-        WeatherData(int h, double f) : hour(h), factor(f) {}
+        WeatherData(string loc, int y, int m, int d, int h, double f)
+            : location(loc), year(y), month(m), day(d), hour(h), factor(f) {}
     };
     vector<TrafficData> trafficData;
     vector<WeatherData> weatherData;
@@ -361,15 +365,18 @@ string nowTime()
     string line;
     while (getline(fin, line))
     {
+        if (line.empty()) continue;
         stringstream ss(line);
-        string hourStr, factorStr;
+        string loc, yearStr, monthStr, dayStr, hourStr, factorStr;
 
+        getline(ss, loc, ',');
+        getline(ss, yearStr, ',');
+        getline(ss, monthStr, ',');
+        getline(ss, dayStr, ',');
         getline(ss, hourStr, ',');
         getline(ss, factorStr, ',');
 
-        int hour = stoi(hourStr);
-        double factor = stod(factorStr);
-        trafficData.push_back(TrafficData(hour, factor));
+        trafficData.push_back(TrafficData(loc, stoi(yearStr), stoi(monthStr), stoi(dayStr), stoi(hourStr), stod(factorStr)));
     }
 }
 
@@ -383,29 +390,36 @@ void loadWeather()
 
     while (getline(fin, line))
     {
+        if (line.empty()) continue;
         stringstream ss(line);
-        string hourStr, factorStr;
+        string loc, yearStr, monthStr, dayStr, hourStr, factorStr;
 
+        getline(ss, loc, ',');
+        getline(ss, yearStr, ',');
+        getline(ss, monthStr, ',');
+        getline(ss, dayStr, ',');
         getline(ss, hourStr, ',');
         getline(ss, factorStr, ',');
 
-        int hour = stoi(hourStr);
-        double factor = stod(factorStr);
-
-        weatherData.push_back(WeatherData(hour, factor));
+        weatherData.push_back(WeatherData(loc, stoi(yearStr), stoi(monthStr), stoi(dayStr), stoi(hourStr), stod(factorStr)));
     }
 }
 
 
-double getTrafficFactor()
+double getTrafficFactor(string locName)
 {
     time_t currentTime = time(nullptr);
-    tm *localTime = localtime(&currentTime);
-    int currentHour = localTime->tm_hour;
+    tm *lt = localtime(&currentTime);
+    
+    int y = lt->tm_year + 1900;
+    int m = lt->tm_mon + 1;
+    int d = lt->tm_mday;
+    int h = lt->tm_hour;
 
     for (const auto &traffic : trafficData)
     {
-        if (traffic.hour == currentHour)
+        if (traffic.location == locName && traffic.year == y && 
+            traffic.month == m && traffic.day == d && traffic.hour == h)
         {
             return traffic.factor;
         }
@@ -414,15 +428,20 @@ double getTrafficFactor()
     return 1.0;
 }
     
-    double getWeatherFactor()
+    double getWeatherFactor(string locName)
     {
         time_t currentTime = time(nullptr);
-        tm *localTime = localtime(&currentTime);
-        int currentHour = localTime->tm_hour;
+        tm *lt = localtime(&currentTime);
+        
+        int y = lt->tm_year + 1900;
+        int m = lt->tm_mon + 1;
+        int d = lt->tm_mday;
+        int h = lt->tm_hour;
 
         for (const auto &wd : weatherData)
         {
-            if (wd.hour == currentHour)
+            if (wd.location == locName && wd.year == y && 
+                wd.month == m && wd.day == d && wd.hour == h)
             {
                 return wd.factor;
             }
@@ -431,7 +450,7 @@ double getTrafficFactor()
     }
 
     double calculateDynamicFare(double distance, const string &vehicleType,
-                                int availableDrivers, int activeUsers)
+                                int availableDrivers, int activeUsers, string locName)
     {
         double baseCharge = 0.0;
         double perKmRate = 0.0;
@@ -458,8 +477,8 @@ double getTrafficFactor()
         }
 
         double baseFare = baseCharge + (distance * perKmRate);
-        double trafficSurge = (getTrafficFactor() - 1.0) * 0.4;
-        double weatherSurge = (getWeatherFactor() - 1.0) * 0.5;
+        double trafficSurge = (getTrafficFactor(locName) - 1.0) * 0.4;
+        double weatherSurge = (getWeatherFactor(locName) - 1.0) * 0.5;
 
         double demandSurge = 0.0;
         if (activeUsers > 0)
@@ -631,7 +650,7 @@ double getTrafficFactor()
         ofstream fout("traffic.csv");
         for (const auto &t : trafficData)
         {
-            fout << t.hour << "," << fixed << setprecision(1) << t.factor << "\n";
+            fout << t.location << "," << t.year << "," << t.month << "," << t.day << "," << t.hour << "," << fixed << setprecision(1) << t.factor << "\n";
         }
     }
 
@@ -640,7 +659,7 @@ double getTrafficFactor()
         ofstream fout("weather.csv");
         for (const auto &w : weatherData)
         {
-            fout << w.hour << "," << fixed << setprecision(1) << w.factor << "\n";
+            fout << w.location << "," << w.year << "," << w.month << "," << w.day << "," << w.hour << "," << fixed << setprecision(1) << w.factor << "\n";
         }
     }
 
@@ -835,7 +854,7 @@ double getTrafficFactor()
         int activeUsers = (int)users.size();
         double speed = vehicle->speed();
         int availableDrivers = countAvailableDrivers(selectedVehicle);
-        double fare = calculateDynamicFare(tripDistance, selectedVehicle, availableDrivers, activeUsers);
+        double fare = calculateDynamicFare(tripDistance, selectedVehicle, availableDrivers, activeUsers, from.name);
         int eta = (int)round(((pickupDistance + tripDistance) / speed) * 60.0);
 
         // static variable demo
@@ -1101,10 +1120,17 @@ double getTrafficFactor()
                     continue;
                 }
 
+                string loc = InputValidator<string>::getInput("Location Name: ");
+                time_t now = time(nullptr);
+                tm *lt = localtime(&now);
+                int y = lt->tm_year + 1900;
+                int m = lt->tm_mon + 1;
+                int d = lt->tm_mday;
+
                 bool found = false;
                 for (auto &t : trafficData)
                 {
-                    if (t.hour == hour)
+                    if (t.location == loc && t.hour == hour && t.year == y && t.month == m && t.day == d)
                     {
                         t.factor = factor;
                         found = true;
@@ -1112,7 +1138,7 @@ double getTrafficFactor()
                     }
                 }
                 if (!found)
-                    trafficData.push_back(TrafficData(hour, factor));
+                    trafficData.push_back(TrafficData(loc, y, m, d, hour, factor));
                 saveTraffic();
                 cout << "Traffic data saved successfully.\n";
             }
@@ -1177,10 +1203,17 @@ double getTrafficFactor()
                     continue;
                 }
 
+                string loc = InputValidator<string>::getInput("Location Name: ");
+                time_t now = time(nullptr);
+                tm *lt = localtime(&now);
+                int y = lt->tm_year + 1900;
+                int m = lt->tm_mon + 1;
+                int d = lt->tm_mday;
+
                 bool found = false;
                 for (auto &w : weatherData)
                 {
-                    if (w.hour == hour)
+                    if (w.location == loc && w.hour == hour && w.year == y && w.month == m && w.day == d)
                     {
                         w.factor = factor;
                         found = true;
@@ -1188,7 +1221,7 @@ double getTrafficFactor()
                     }
                 }
                 if (!found)
-                    weatherData.push_back(WeatherData(hour, factor));
+                    weatherData.push_back(WeatherData(loc, y, m, d, hour, factor));
                 saveWeather();
                 cout << "Weather data saved successfully.\n";
             }

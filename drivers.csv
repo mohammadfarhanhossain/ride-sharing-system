@@ -1,0 +1,1002 @@
+d1,d1,Bike,Rampura,1,108.00,1,0.0,0
+d2,d2,CNG,Gulshan-1,1,0.00,0,0.0,0
+d3,d3,UberX,Gulshan-2,1,0.00,0,0.0,0
+d4,d4,Premium,Tejgaon,1,928.00,1,5.0,1
+d5,d5,Bike,Uttara-1,1,0.00,0,0.0,0
+d6,d6,CNG,Uttara-3,1,0.00,0,0.0,0
+d7,d7,UberX,Uttara-7,1,0.00,0,0.0,0
+d8,d8,Premium,Mirpur-1,1,0.00,0,0.0,0
+d9,d9,Bike,Mirpur-10,1,0.00,0,0.0,0
+d10,d10,CNG,Mirpur-12,1,0.00,0,0.0,0
+d11,d11,UberX,Mohammadpur,1,0.00,0,0.0,0
+d12,d12,Premium,Farmgate,1,0.00,0,0.0,0
+d13,d13,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d14,d14,CNG,Shahbagh,1,0.00,0,0.0,0
+d15,d15,UberX,Ramna,1,0.00,0,0.0,0
+d16,d16,Premium,Motijheel,1,0.00,0,0.0,0
+d17,d17,Bike,Paltan,1,0.00,0,0.0,0
+d18,d18,CNG,Kamalapur,1,0.00,0,0.0,0
+d19,d19,UberX,Jatrabari,1,0.00,0,0.0,0
+d20,d20,Premium,Demra,1,0.00,0,0.0,0
+d21,d21,Bike,Bijoynagar,1,108.00,1,0.0,0
+d22,d22,CNG,Rampura,1,0.00,0,0.0,0
+d23,d23,UberX,Malibagh,1,0.00,0,0.0,0
+d24,d24,Premium,Moghbazar,1,0.00,0,0.0,0
+d25,d25,Bike,Wari,1,120.00,1,5.0,1
+d26,d26,CNG,Agargaon,1,0.00,0,0.0,0
+d27,d27,UberX,Shewrapara,1,0.00,0,0.0,0
+d28,d28,Premium,Kazipara,1,0.00,0,0.0,0
+d29,d29,Bike,Pallabi,1,0.00,0,0.0,0
+d30,d30,CNG,Kallyanpur,1,0.00,0,0.0,0
+d31,d31,UberX,Gabtoli,1,0.00,0,0.0,0
+d32,d32,Premium,Hazaribagh,1,0.00,0,0.0,0
+d33,d33,Bike,Lalbagh,1,0.00,0,0.0,0
+d34,d34,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d35,d35,UberX,Sadarghat,1,0.00,0,0.0,0
+d36,d36,Premium,Keraniganj,1,0.00,0,0.0,0
+d37,d37,Bike,Shyampur,1,0.00,0,0.0,0
+d38,d38,CNG,Postogola,1,0.00,0,0.0,0
+d39,d39,UberX,Wari,1,0.00,0,0.0,0
+d40,d40,Premium,Sutrapur,1,0.00,0,0.0,0
+d41,d41,Bike,Bangshal,1,0.00,0,0.0,0
+d42,d42,CNG,Islampur,1,0.00,0,0.0,0
+d43,d43,UberX,New Market,1,0.00,0,0.0,0
+d44,d44,Premium,Elephant Road,1,0.00,0,0.0,0
+d45,d45,Bike,Science Lab,1,0.00,0,0.0,0
+d46,d46,CNG,Green Road,1,0.00,0,0.0,0
+d47,d47,UberX,Panthapath,1,0.00,0,0.0,0
+d48,d48,Premium,Bashundhara,1,0.00,0,0.0,0
+d49,d49,Bike,Kuril,1,0.00,0,0.0,0
+d50,d50,CNG,Nikunja,1,0.00,0,0.0,0
+d51,d51,UberX,Airport,1,0.00,0,0.0,0
+d52,d52,Premium,Khilkhet,1,0.00,0,0.0,0
+d53,d53,Bike,Baridhara,1,0.00,0,0.0,0
+d54,d54,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d55,d55,UberX,Mohakhali,1,0.00,0,0.0,0
+d56,d56,Premium,Nakhalpara,1,0.00,0,0.0,0
+d57,d57,Bike,Eskaton,1,0.00,0,0.0,0
+d58,d58,CNG,Hatirpool,1,0.00,0,0.0,0
+d59,d59,UberX,Kakrail,1,0.00,0,0.0,0
+d60,d60,Premium,Bijoynagar,1,0.00,0,0.0,0
+d61,d61,Bike,Dhanmondi,1,0.00,0,0.0,0
+d62,d62,CNG,Gulshan-1,1,0.00,0,0.0,0
+d63,d63,UberX,Gulshan-2,1,0.00,0,0.0,0
+d64,d64,Premium,Banani,1,0.00,0,0.0,0
+d65,d65,Bike,Uttara-1,1,0.00,0,0.0,0
+d66,d66,CNG,Uttara-3,1,0.00,0,0.0,0
+d67,d67,UberX,Uttara-7,1,0.00,0,0.0,0
+d68,d68,Premium,Mirpur-1,1,0.00,0,0.0,0
+d69,d69,Bike,Mirpur-10,1,0.00,0,0.0,0
+d70,d70,CNG,Mirpur-12,1,0.00,0,0.0,0
+d71,d71,UberX,Mohammadpur,1,0.00,0,0.0,0
+d72,d72,Premium,Farmgate,1,0.00,0,0.0,0
+d73,d73,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d74,d74,CNG,Shahbagh,1,0.00,0,0.0,0
+d75,d75,UberX,Ramna,1,0.00,0,0.0,0
+d76,d76,Premium,Motijheel,1,0.00,0,0.0,0
+d77,d77,Bike,Paltan,1,0.00,0,0.0,0
+d78,d78,CNG,Kamalapur,1,0.00,0,0.0,0
+d79,d79,UberX,Jatrabari,1,0.00,0,0.0,0
+d80,d80,Premium,Demra,1,0.00,0,0.0,0
+d81,d81,Bike,Wari,1,368.00,2,4.5,2
+d82,d82,CNG,Rampura,1,0.00,0,0.0,0
+d83,d83,UberX,Malibagh,1,0.00,0,0.0,0
+d84,d84,Premium,Moghbazar,1,0.00,0,0.0,0
+d85,d85,Bike,Demra,1,156.00,1,5.0,1
+d86,d86,CNG,Agargaon,1,0.00,0,0.0,0
+d87,d87,UberX,Shewrapara,1,0.00,0,0.0,0
+d88,d88,Premium,Kazipara,1,0.00,0,0.0,0
+d89,d89,Bike,Pallabi,1,0.00,0,0.0,0
+d90,d90,CNG,Kallyanpur,1,0.00,0,0.0,0
+d91,d91,UberX,Gabtoli,1,0.00,0,0.0,0
+d92,d92,Premium,Hazaribagh,1,0.00,0,0.0,0
+d93,d93,Bike,Lalbagh,1,0.00,0,0.0,0
+d94,d94,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d95,d95,UberX,Sadarghat,1,0.00,0,0.0,0
+d96,d96,Premium,Keraniganj,1,0.00,0,0.0,0
+d97,d97,Bike,Shyampur,1,0.00,0,0.0,0
+d98,d98,CNG,Postogola,1,0.00,0,0.0,0
+d99,d99,UberX,Wari,1,0.00,0,0.0,0
+d100,d100,Premium,Sutrapur,1,0.00,0,0.0,0
+d101,d101,Bike,Bangshal,1,0.00,0,0.0,0
+d102,d102,CNG,Islampur,1,0.00,0,0.0,0
+d103,d103,UberX,New Market,1,0.00,0,0.0,0
+d104,d104,Premium,Elephant Road,1,0.00,0,0.0,0
+d105,d105,Bike,Science Lab,1,0.00,0,0.0,0
+d106,d106,CNG,Green Road,1,0.00,0,0.0,0
+d107,d107,UberX,Panthapath,1,0.00,0,0.0,0
+d108,d108,Premium,Bashundhara,1,0.00,0,0.0,0
+d109,d109,Bike,Kuril,1,0.00,0,0.0,0
+d110,d110,CNG,Nikunja,1,0.00,0,0.0,0
+d111,d111,UberX,Airport,1,0.00,0,0.0,0
+d112,d112,Premium,Khilkhet,1,0.00,0,0.0,0
+d113,d113,Bike,Baridhara,1,0.00,0,0.0,0
+d114,d114,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d115,d115,UberX,Mohakhali,1,0.00,0,0.0,0
+d116,d116,Premium,Nakhalpara,1,0.00,0,0.0,0
+d117,d117,Bike,Eskaton,1,0.00,0,0.0,0
+d118,d118,CNG,Hatirpool,1,0.00,0,0.0,0
+d119,d119,UberX,Kakrail,1,0.00,0,0.0,0
+d120,d120,Premium,Bijoynagar,1,0.00,0,0.0,0
+d121,d121,Bike,Dhanmondi,1,0.00,0,0.0,0
+d122,d122,CNG,Gulshan-1,1,0.00,0,0.0,0
+d123,d123,UberX,Gulshan-2,1,0.00,0,0.0,0
+d124,d124,Premium,Banani,1,0.00,0,0.0,0
+d125,d125,Bike,Uttara-1,1,0.00,0,0.0,0
+d126,d126,CNG,Uttara-3,1,0.00,0,0.0,0
+d127,d127,UberX,Uttara-7,1,0.00,0,0.0,0
+d128,d128,Premium,Mirpur-1,1,0.00,0,0.0,0
+d129,d129,Bike,Mirpur-10,1,0.00,0,0.0,0
+d130,d130,CNG,Mirpur-12,1,0.00,0,0.0,0
+d131,d131,UberX,Mohammadpur,1,0.00,0,0.0,0
+d132,d132,Premium,Farmgate,1,0.00,0,0.0,0
+d133,d133,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d134,d134,CNG,Shahbagh,1,0.00,0,0.0,0
+d135,d135,UberX,Ramna,1,0.00,0,0.0,0
+d136,d136,Premium,Motijheel,1,0.00,0,0.0,0
+d137,d137,Bike,Paltan,1,0.00,0,0.0,0
+d138,d138,CNG,Kamalapur,1,0.00,0,0.0,0
+d139,d139,UberX,Jatrabari,1,0.00,0,0.0,0
+d140,d140,Premium,Demra,1,0.00,0,0.0,0
+d141,d141,Bike,Badda,1,0.00,0,0.0,0
+d142,d142,CNG,Rampura,1,0.00,0,0.0,0
+d143,d143,UberX,Malibagh,1,0.00,0,0.0,0
+d144,d144,Premium,Moghbazar,1,0.00,0,0.0,0
+d145,d145,Bike,Demra,1,168.00,1,5.0,1
+d146,d146,CNG,Agargaon,1,0.00,0,0.0,0
+d147,d147,UberX,Shewrapara,1,0.00,0,0.0,0
+d148,d148,Premium,Kazipara,1,0.00,0,0.0,0
+d149,d149,Bike,Pallabi,1,0.00,0,0.0,0
+d150,d150,CNG,Kallyanpur,1,0.00,0,0.0,0
+d151,d151,UberX,Gabtoli,1,0.00,0,0.0,0
+d152,d152,Premium,Hazaribagh,1,0.00,0,0.0,0
+d153,d153,Bike,Lalbagh,1,0.00,0,0.0,0
+d154,d154,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d155,d155,UberX,Sadarghat,1,0.00,0,0.0,0
+d156,d156,Premium,Keraniganj,1,0.00,0,0.0,0
+d157,d157,Bike,Shyampur,1,0.00,0,0.0,0
+d158,d158,CNG,Postogola,1,0.00,0,0.0,0
+d159,d159,UberX,Wari,1,0.00,0,0.0,0
+d160,d160,Premium,Sutrapur,1,0.00,0,0.0,0
+d161,d161,Bike,Bangshal,1,0.00,0,0.0,0
+d162,d162,CNG,Islampur,1,0.00,0,0.0,0
+d163,d163,UberX,New Market,1,0.00,0,0.0,0
+d164,d164,Premium,Elephant Road,1,0.00,0,0.0,0
+d165,d165,Bike,Science Lab,1,0.00,0,0.0,0
+d166,d166,CNG,Green Road,1,0.00,0,0.0,0
+d167,d167,UberX,Panthapath,1,0.00,0,0.0,0
+d168,d168,Premium,Bashundhara,1,0.00,0,0.0,0
+d169,d169,Bike,Kuril,1,0.00,0,0.0,0
+d170,d170,CNG,Nikunja,1,0.00,0,0.0,0
+d171,d171,UberX,Airport,1,0.00,0,0.0,0
+d172,d172,Premium,Khilkhet,1,0.00,0,0.0,0
+d173,d173,Bike,Baridhara,1,0.00,0,0.0,0
+d174,d174,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d175,d175,UberX,Mohakhali,1,0.00,0,0.0,0
+d176,d176,Premium,Nakhalpara,1,0.00,0,0.0,0
+d177,d177,Bike,Eskaton,1,0.00,0,0.0,0
+d178,d178,CNG,Hatirpool,1,0.00,0,0.0,0
+d179,d179,UberX,Kakrail,1,0.00,0,0.0,0
+d180,d180,Premium,Bijoynagar,1,0.00,0,0.0,0
+d181,d181,Bike,Dhanmondi,1,0.00,0,0.0,0
+d182,d182,CNG,Gulshan-1,1,0.00,0,0.0,0
+d183,d183,UberX,Gulshan-2,1,0.00,0,0.0,0
+d184,d184,Premium,Banani,1,0.00,0,0.0,0
+d185,d185,Bike,Uttara-1,1,0.00,0,0.0,0
+d186,d186,CNG,Uttara-3,1,0.00,0,0.0,0
+d187,d187,UberX,Uttara-7,1,0.00,0,0.0,0
+d188,d188,Premium,Mirpur-1,1,0.00,0,0.0,0
+d189,d189,Bike,Mirpur-10,1,0.00,0,0.0,0
+d190,d190,CNG,Mirpur-12,1,0.00,0,0.0,0
+d191,d191,UberX,Mohammadpur,1,0.00,0,0.0,0
+d192,d192,Premium,Farmgate,1,0.00,0,0.0,0
+d193,d193,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d194,d194,CNG,Shahbagh,1,0.00,0,0.0,0
+d195,d195,UberX,Ramna,1,0.00,0,0.0,0
+d196,d196,Premium,Motijheel,1,0.00,0,0.0,0
+d197,d197,Bike,Paltan,1,0.00,0,0.0,0
+d198,d198,CNG,Kamalapur,1,0.00,0,0.0,0
+d199,d199,UberX,Jatrabari,1,0.00,0,0.0,0
+d200,d200,Premium,Demra,1,0.00,0,0.0,0
+d201,d201,Bike,Badda,1,0.00,0,0.0,0
+d202,d202,CNG,Rampura,1,0.00,0,0.0,0
+d203,d203,UberX,Malibagh,1,0.00,0,0.0,0
+d204,d204,Premium,Moghbazar,1,0.00,0,0.0,0
+d205,d205,Bike,Elephant Road,1,100.00,1,5.0,1
+d206,d206,CNG,Agargaon,1,0.00,0,0.0,0
+d207,d207,UberX,Shewrapara,1,0.00,0,0.0,0
+d208,d208,Premium,Kazipara,1,0.00,0,0.0,0
+d209,d209,Bike,Pallabi,1,0.00,0,0.0,0
+d210,d210,CNG,Kallyanpur,1,0.00,0,0.0,0
+d211,d211,UberX,Gabtoli,1,0.00,0,0.0,0
+d212,d212,Premium,Hazaribagh,1,0.00,0,0.0,0
+d213,d213,Bike,Lalbagh,1,0.00,0,0.0,0
+d214,d214,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d215,d215,UberX,Sadarghat,1,0.00,0,0.0,0
+d216,d216,Premium,Keraniganj,1,0.00,0,0.0,0
+d217,d217,Bike,Shyampur,1,0.00,0,0.0,0
+d218,d218,CNG,Postogola,1,0.00,0,0.0,0
+d219,d219,UberX,Wari,1,0.00,0,0.0,0
+d220,d220,Premium,Sutrapur,1,0.00,0,0.0,0
+d221,d221,Bike,Bangshal,1,0.00,0,0.0,0
+d222,d222,CNG,Islampur,1,0.00,0,0.0,0
+d223,d223,UberX,New Market,1,0.00,0,0.0,0
+d224,d224,Premium,Elephant Road,1,0.00,0,0.0,0
+d225,d225,Bike,Science Lab,1,0.00,0,0.0,0
+d226,d226,CNG,Green Road,1,0.00,0,0.0,0
+d227,d227,UberX,Panthapath,1,0.00,0,0.0,0
+d228,d228,Premium,Bashundhara,1,0.00,0,0.0,0
+d229,d229,Bike,Kuril,1,0.00,0,0.0,0
+d230,d230,CNG,Nikunja,1,0.00,0,0.0,0
+d231,d231,UberX,Airport,1,0.00,0,0.0,0
+d232,d232,Premium,Khilkhet,1,0.00,0,0.0,0
+d233,d233,Bike,Baridhara,1,0.00,0,0.0,0
+d234,d234,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d235,d235,UberX,Mohakhali,1,0.00,0,0.0,0
+d236,d236,Premium,Nakhalpara,1,0.00,0,0.0,0
+d237,d237,Bike,Eskaton,1,0.00,0,0.0,0
+d238,d238,CNG,Hatirpool,1,0.00,0,0.0,0
+d239,d239,UberX,Kakrail,1,0.00,0,0.0,0
+d240,d240,Premium,Bijoynagar,1,0.00,0,0.0,0
+d241,d241,Bike,Dhanmondi,1,0.00,0,0.0,0
+d242,d242,CNG,Gulshan-1,1,0.00,0,0.0,0
+d243,d243,UberX,Gulshan-2,1,0.00,0,0.0,0
+d244,d244,Premium,Banani,1,0.00,0,0.0,0
+d245,d245,Bike,Uttara-1,1,0.00,0,0.0,0
+d246,d246,CNG,Uttara-3,1,0.00,0,0.0,0
+d247,d247,UberX,Uttara-7,1,0.00,0,0.0,0
+d248,d248,Premium,Mirpur-1,1,0.00,0,0.0,0
+d249,d249,Bike,Mirpur-10,1,0.00,0,0.0,0
+d250,d250,CNG,Mirpur-12,1,0.00,0,0.0,0
+d251,d251,UberX,Mohammadpur,1,0.00,0,0.0,0
+d252,d252,Premium,Farmgate,1,0.00,0,0.0,0
+d253,d253,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d254,d254,CNG,Shahbagh,1,0.00,0,0.0,0
+d255,d255,UberX,Ramna,1,0.00,0,0.0,0
+d256,d256,Premium,Motijheel,1,0.00,0,0.0,0
+d257,d257,Bike,Paltan,1,0.00,0,0.0,0
+d258,d258,CNG,Kamalapur,1,0.00,0,0.0,0
+d259,d259,UberX,Jatrabari,1,0.00,0,0.0,0
+d260,d260,Premium,Demra,1,0.00,0,0.0,0
+d261,d261,Bike,Badda,1,0.00,0,0.0,0
+d262,d262,CNG,Rampura,1,0.00,0,0.0,0
+d263,d263,UberX,Malibagh,1,0.00,0,0.0,0
+d264,d264,Premium,Moghbazar,1,0.00,0,0.0,0
+d265,d265,Bike,Demra,1,168.00,1,5.0,1
+d266,d266,CNG,Agargaon,1,0.00,0,0.0,0
+d267,d267,UberX,Shewrapara,1,0.00,0,0.0,0
+d268,d268,Premium,Kazipara,1,0.00,0,0.0,0
+d269,d269,Bike,Pallabi,1,0.00,0,0.0,0
+d270,d270,CNG,Kallyanpur,1,0.00,0,0.0,0
+d271,d271,UberX,Gabtoli,1,0.00,0,0.0,0
+d272,d272,Premium,Hazaribagh,1,0.00,0,0.0,0
+d273,d273,Bike,Lalbagh,1,0.00,0,0.0,0
+d274,d274,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d275,d275,UberX,Sadarghat,1,0.00,0,0.0,0
+d276,d276,Premium,Keraniganj,1,0.00,0,0.0,0
+d277,d277,Bike,Shyampur,1,0.00,0,0.0,0
+d278,d278,CNG,Postogola,1,0.00,0,0.0,0
+d279,d279,UberX,Wari,1,0.00,0,0.0,0
+d280,d280,Premium,Sutrapur,1,0.00,0,0.0,0
+d281,d281,Bike,Bangshal,1,0.00,0,0.0,0
+d282,d282,CNG,Islampur,1,0.00,0,0.0,0
+d283,d283,UberX,New Market,1,0.00,0,0.0,0
+d284,d284,Premium,Elephant Road,1,0.00,0,0.0,0
+d285,d285,Bike,Science Lab,1,0.00,0,0.0,0
+d286,d286,CNG,Green Road,1,0.00,0,0.0,0
+d287,d287,UberX,Panthapath,1,0.00,0,0.0,0
+d288,d288,Premium,Bashundhara,1,0.00,0,0.0,0
+d289,d289,Bike,Kuril,1,0.00,0,0.0,0
+d290,d290,CNG,Nikunja,1,0.00,0,0.0,0
+d291,d291,UberX,Airport,1,0.00,0,0.0,0
+d292,d292,Premium,Khilkhet,1,0.00,0,0.0,0
+d293,d293,Bike,Baridhara,1,0.00,0,0.0,0
+d294,d294,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d295,d295,UberX,Mohakhali,1,0.00,0,0.0,0
+d296,d296,Premium,Nakhalpara,1,0.00,0,0.0,0
+d297,d297,Bike,Eskaton,1,0.00,0,0.0,0
+d298,d298,CNG,Hatirpool,1,0.00,0,0.0,0
+d299,d299,UberX,Kakrail,1,0.00,0,0.0,0
+d300,d300,Premium,Bijoynagar,1,0.00,0,0.0,0
+d301,d301,Bike,Dhanmondi,1,0.00,0,0.0,0
+d302,d302,CNG,Gulshan-1,1,0.00,0,0.0,0
+d303,d303,UberX,Gulshan-2,1,0.00,0,0.0,0
+d304,d304,Premium,Banani,1,0.00,0,0.0,0
+d305,d305,Bike,Uttara-1,1,0.00,0,0.0,0
+d306,d306,CNG,Uttara-3,1,0.00,0,0.0,0
+d307,d307,UberX,Uttara-7,1,0.00,0,0.0,0
+d308,d308,Premium,Mirpur-1,1,0.00,0,0.0,0
+d309,d309,Bike,Mirpur-10,1,0.00,0,0.0,0
+d310,d310,CNG,Mirpur-12,1,0.00,0,0.0,0
+d311,d311,UberX,Mohammadpur,1,0.00,0,0.0,0
+d312,d312,Premium,Farmgate,1,0.00,0,0.0,0
+d313,d313,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d314,d314,CNG,Shahbagh,1,0.00,0,0.0,0
+d315,d315,UberX,Ramna,1,0.00,0,0.0,0
+d316,d316,Premium,Motijheel,1,0.00,0,0.0,0
+d317,d317,Bike,Paltan,1,0.00,0,0.0,0
+d318,d318,CNG,Kamalapur,1,0.00,0,0.0,0
+d319,d319,UberX,Jatrabari,1,0.00,0,0.0,0
+d320,d320,Premium,Demra,1,0.00,0,0.0,0
+d321,d321,Bike,Badda,1,0.00,0,0.0,0
+d322,d322,CNG,Rampura,1,0.00,0,0.0,0
+d323,d323,UberX,Malibagh,1,0.00,0,0.0,0
+d324,d324,Premium,Moghbazar,1,0.00,0,0.0,0
+d325,d325,Bike,Tejgaon,1,0.00,0,0.0,0
+d326,d326,CNG,Agargaon,1,0.00,0,0.0,0
+d327,d327,UberX,Shewrapara,1,0.00,0,0.0,0
+d328,d328,Premium,Kazipara,1,0.00,0,0.0,0
+d329,d329,Bike,Pallabi,1,0.00,0,0.0,0
+d330,d330,CNG,Kallyanpur,1,0.00,0,0.0,0
+d331,d331,UberX,Gabtoli,1,0.00,0,0.0,0
+d332,d332,Premium,Hazaribagh,1,0.00,0,0.0,0
+d333,d333,Bike,Lalbagh,1,0.00,0,0.0,0
+d334,d334,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d335,d335,UberX,Sadarghat,1,0.00,0,0.0,0
+d336,d336,Premium,Keraniganj,1,0.00,0,0.0,0
+d337,d337,Bike,Shyampur,1,0.00,0,0.0,0
+d338,d338,CNG,Postogola,1,0.00,0,0.0,0
+d339,d339,UberX,Wari,1,0.00,0,0.0,0
+d340,d340,Premium,Sutrapur,1,0.00,0,0.0,0
+d341,d341,Bike,Bangshal,1,0.00,0,0.0,0
+d342,d342,CNG,Islampur,1,0.00,0,0.0,0
+d343,d343,UberX,New Market,1,0.00,0,0.0,0
+d344,d344,Premium,Elephant Road,1,0.00,0,0.0,0
+d345,d345,Bike,Science Lab,1,0.00,0,0.0,0
+d346,d346,CNG,Green Road,1,0.00,0,0.0,0
+d347,d347,UberX,Panthapath,1,0.00,0,0.0,0
+d348,d348,Premium,Bashundhara,1,0.00,0,0.0,0
+d349,d349,Bike,Kuril,1,0.00,0,0.0,0
+d350,d350,CNG,Nikunja,1,0.00,0,0.0,0
+d351,d351,UberX,Airport,1,0.00,0,0.0,0
+d352,d352,Premium,Khilkhet,1,0.00,0,0.0,0
+d353,d353,Bike,Baridhara,1,0.00,0,0.0,0
+d354,d354,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d355,d355,UberX,Mohakhali,1,0.00,0,0.0,0
+d356,d356,Premium,Nakhalpara,1,0.00,0,0.0,0
+d357,d357,Bike,Eskaton,1,0.00,0,0.0,0
+d358,d358,CNG,Hatirpool,1,0.00,0,0.0,0
+d359,d359,UberX,Kakrail,1,0.00,0,0.0,0
+d360,d360,Premium,Bijoynagar,1,0.00,0,0.0,0
+d361,d361,Bike,Dhanmondi,1,0.00,0,0.0,0
+d362,d362,CNG,Gulshan-1,1,0.00,0,0.0,0
+d363,d363,UberX,Gulshan-2,1,0.00,0,0.0,0
+d364,d364,Premium,Banani,1,0.00,0,0.0,0
+d365,d365,Bike,Uttara-1,1,0.00,0,0.0,0
+d366,d366,CNG,Uttara-3,1,0.00,0,0.0,0
+d367,d367,UberX,Uttara-7,1,0.00,0,0.0,0
+d368,d368,Premium,Mirpur-1,1,0.00,0,0.0,0
+d369,d369,Bike,Mirpur-10,1,0.00,0,0.0,0
+d370,d370,CNG,Mirpur-12,1,0.00,0,0.0,0
+d371,d371,UberX,Mohammadpur,1,0.00,0,0.0,0
+d372,d372,Premium,Farmgate,1,0.00,0,0.0,0
+d373,d373,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d374,d374,CNG,Shahbagh,1,0.00,0,0.0,0
+d375,d375,UberX,Ramna,1,0.00,0,0.0,0
+d376,d376,Premium,Motijheel,1,0.00,0,0.0,0
+d377,d377,Bike,Paltan,1,0.00,0,0.0,0
+d378,d378,CNG,Kamalapur,1,0.00,0,0.0,0
+d379,d379,UberX,Jatrabari,1,0.00,0,0.0,0
+d380,d380,Premium,Demra,1,0.00,0,0.0,0
+d381,d381,Bike,Badda,1,0.00,0,0.0,0
+d382,d382,CNG,Rampura,1,0.00,0,0.0,0
+d383,d383,UberX,Malibagh,1,0.00,0,0.0,0
+d384,d384,Premium,Moghbazar,1,0.00,0,0.0,0
+d385,d385,Bike,Tejgaon,1,0.00,0,0.0,0
+d386,d386,CNG,Agargaon,1,0.00,0,0.0,0
+d387,d387,UberX,Shewrapara,1,0.00,0,0.0,0
+d388,d388,Premium,Kazipara,1,0.00,0,0.0,0
+d389,d389,Bike,Pallabi,1,0.00,0,0.0,0
+d390,d390,CNG,Kallyanpur,1,0.00,0,0.0,0
+d391,d391,UberX,Gabtoli,1,0.00,0,0.0,0
+d392,d392,Premium,Hazaribagh,1,0.00,0,0.0,0
+d393,d393,Bike,Lalbagh,1,0.00,0,0.0,0
+d394,d394,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d395,d395,UberX,Sadarghat,1,0.00,0,0.0,0
+d396,d396,Premium,Keraniganj,1,0.00,0,0.0,0
+d397,d397,Bike,Shyampur,1,0.00,0,0.0,0
+d398,d398,CNG,Postogola,1,0.00,0,0.0,0
+d399,d399,UberX,Wari,1,0.00,0,0.0,0
+d400,d400,Premium,Sutrapur,1,0.00,0,0.0,0
+d401,d401,Bike,Bangshal,1,0.00,0,0.0,0
+d402,d402,CNG,Islampur,1,0.00,0,0.0,0
+d403,d403,UberX,New Market,1,0.00,0,0.0,0
+d404,d404,Premium,Elephant Road,1,0.00,0,0.0,0
+d405,d405,Bike,Science Lab,1,0.00,0,0.0,0
+d406,d406,CNG,Green Road,1,0.00,0,0.0,0
+d407,d407,UberX,Panthapath,1,0.00,0,0.0,0
+d408,d408,Premium,Bashundhara,1,0.00,0,0.0,0
+d409,d409,Bike,Kuril,1,0.00,0,0.0,0
+d410,d410,CNG,Nikunja,1,0.00,0,0.0,0
+d411,d411,UberX,Airport,1,0.00,0,0.0,0
+d412,d412,Premium,Khilkhet,1,0.00,0,0.0,0
+d413,d413,Bike,Baridhara,1,0.00,0,0.0,0
+d414,d414,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d415,d415,UberX,Mohakhali,1,0.00,0,0.0,0
+d416,d416,Premium,Nakhalpara,1,0.00,0,0.0,0
+d417,d417,Bike,Eskaton,1,0.00,0,0.0,0
+d418,d418,CNG,Hatirpool,1,0.00,0,0.0,0
+d419,d419,UberX,Kakrail,1,0.00,0,0.0,0
+d420,d420,Premium,Bijoynagar,1,0.00,0,0.0,0
+d421,d421,Bike,Dhanmondi,1,0.00,0,0.0,0
+d422,d422,CNG,Gulshan-1,1,0.00,0,0.0,0
+d423,d423,UberX,Gulshan-2,1,0.00,0,0.0,0
+d424,d424,Premium,Banani,1,0.00,0,0.0,0
+d425,d425,Bike,Uttara-1,1,0.00,0,0.0,0
+d426,d426,CNG,Uttara-3,1,0.00,0,0.0,0
+d427,d427,UberX,Uttara-7,1,0.00,0,0.0,0
+d428,d428,Premium,Mirpur-1,1,0.00,0,0.0,0
+d429,d429,Bike,Mirpur-10,1,0.00,0,0.0,0
+d430,d430,CNG,Mirpur-12,1,0.00,0,0.0,0
+d431,d431,UberX,Mohammadpur,1,0.00,0,0.0,0
+d432,d432,Premium,Farmgate,1,0.00,0,0.0,0
+d433,d433,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d434,d434,CNG,Shahbagh,1,0.00,0,0.0,0
+d435,d435,UberX,Ramna,1,0.00,0,0.0,0
+d436,d436,Premium,Motijheel,1,0.00,0,0.0,0
+d437,d437,Bike,Paltan,1,0.00,0,0.0,0
+d438,d438,CNG,Kamalapur,1,0.00,0,0.0,0
+d439,d439,UberX,Jatrabari,1,0.00,0,0.0,0
+d440,d440,Premium,Demra,1,0.00,0,0.0,0
+d441,d441,Bike,Badda,1,0.00,0,0.0,0
+d442,d442,CNG,Rampura,1,0.00,0,0.0,0
+d443,d443,UberX,Malibagh,1,0.00,0,0.0,0
+d444,d444,Premium,Moghbazar,1,0.00,0,0.0,0
+d445,d445,Bike,Tejgaon,1,0.00,0,0.0,0
+d446,d446,CNG,Agargaon,1,0.00,0,0.0,0
+d447,d447,UberX,Shewrapara,1,0.00,0,0.0,0
+d448,d448,Premium,Kazipara,1,0.00,0,0.0,0
+d449,d449,Bike,Pallabi,1,0.00,0,0.0,0
+d450,d450,CNG,Kallyanpur,1,0.00,0,0.0,0
+d451,d451,UberX,Gabtoli,1,0.00,0,0.0,0
+d452,d452,Premium,Hazaribagh,1,0.00,0,0.0,0
+d453,d453,Bike,Lalbagh,1,0.00,0,0.0,0
+d454,d454,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d455,d455,UberX,Sadarghat,1,0.00,0,0.0,0
+d456,d456,Premium,Keraniganj,1,0.00,0,0.0,0
+d457,d457,Bike,Shyampur,1,0.00,0,0.0,0
+d458,d458,CNG,Postogola,1,0.00,0,0.0,0
+d459,d459,UberX,Wari,1,0.00,0,0.0,0
+d460,d460,Premium,Sutrapur,1,0.00,0,0.0,0
+d461,d461,Bike,Bangshal,1,0.00,0,0.0,0
+d462,d462,CNG,Islampur,1,0.00,0,0.0,0
+d463,d463,UberX,New Market,1,0.00,0,0.0,0
+d464,d464,Premium,Elephant Road,1,0.00,0,0.0,0
+d465,d465,Bike,Science Lab,1,0.00,0,0.0,0
+d466,d466,CNG,Green Road,1,0.00,0,0.0,0
+d467,d467,UberX,Panthapath,1,0.00,0,0.0,0
+d468,d468,Premium,Bashundhara,1,0.00,0,0.0,0
+d469,d469,Bike,Kuril,1,0.00,0,0.0,0
+d470,d470,CNG,Nikunja,1,0.00,0,0.0,0
+d471,d471,UberX,Airport,1,0.00,0,0.0,0
+d472,d472,Premium,Khilkhet,1,0.00,0,0.0,0
+d473,d473,Bike,Baridhara,1,0.00,0,0.0,0
+d474,d474,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d475,d475,UberX,Mohakhali,1,0.00,0,0.0,0
+d476,d476,Premium,Nakhalpara,1,0.00,0,0.0,0
+d477,d477,Bike,Eskaton,1,0.00,0,0.0,0
+d478,d478,CNG,Hatirpool,1,0.00,0,0.0,0
+d479,d479,UberX,Kakrail,1,0.00,0,0.0,0
+d480,d480,Premium,Bijoynagar,1,0.00,0,0.0,0
+d481,d481,Bike,Dhanmondi,1,0.00,0,0.0,0
+d482,d482,CNG,Gulshan-1,1,0.00,0,0.0,0
+d483,d483,UberX,Gulshan-2,1,0.00,0,0.0,0
+d484,d484,Premium,Banani,1,0.00,0,0.0,0
+d485,d485,Bike,Uttara-1,1,0.00,0,0.0,0
+d486,d486,CNG,Uttara-3,1,0.00,0,0.0,0
+d487,d487,UberX,Uttara-7,1,0.00,0,0.0,0
+d488,d488,Premium,Mirpur-1,1,0.00,0,0.0,0
+d489,d489,Bike,Mirpur-10,1,0.00,0,0.0,0
+d490,d490,CNG,Mirpur-12,1,0.00,0,0.0,0
+d491,d491,UberX,Mohammadpur,1,0.00,0,0.0,0
+d492,d492,Premium,Farmgate,1,0.00,0,0.0,0
+d493,d493,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d494,d494,CNG,Shahbagh,1,0.00,0,0.0,0
+d495,d495,UberX,Ramna,1,0.00,0,0.0,0
+d496,d496,Premium,Motijheel,1,0.00,0,0.0,0
+d497,d497,Bike,Paltan,1,0.00,0,0.0,0
+d498,d498,CNG,Kamalapur,1,0.00,0,0.0,0
+d499,d499,UberX,Jatrabari,1,0.00,0,0.0,0
+d500,d500,Premium,Demra,1,0.00,0,0.0,0
+d501,d501,Bike,Badda,1,0.00,0,0.0,0
+d502,d502,CNG,Rampura,1,0.00,0,0.0,0
+d503,d503,UberX,Malibagh,1,0.00,0,0.0,0
+d504,d504,Premium,Moghbazar,1,0.00,0,0.0,0
+d505,d505,Bike,Tejgaon,1,0.00,0,0.0,0
+d506,d506,CNG,Agargaon,1,0.00,0,0.0,0
+d507,d507,UberX,Shewrapara,1,0.00,0,0.0,0
+d508,d508,Premium,Kazipara,1,0.00,0,0.0,0
+d509,d509,Bike,Pallabi,1,0.00,0,0.0,0
+d510,d510,CNG,Kallyanpur,1,0.00,0,0.0,0
+d511,d511,UberX,Gabtoli,1,0.00,0,0.0,0
+d512,d512,Premium,Hazaribagh,1,0.00,0,0.0,0
+d513,d513,Bike,Lalbagh,1,0.00,0,0.0,0
+d514,d514,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d515,d515,UberX,Sadarghat,1,0.00,0,0.0,0
+d516,d516,Premium,Keraniganj,1,0.00,0,0.0,0
+d517,d517,Bike,Shyampur,1,0.00,0,0.0,0
+d518,d518,CNG,Postogola,1,0.00,0,0.0,0
+d519,d519,UberX,Wari,1,0.00,0,0.0,0
+d520,d520,Premium,Sutrapur,1,0.00,0,0.0,0
+d521,d521,Bike,Bangshal,1,0.00,0,0.0,0
+d522,d522,CNG,Islampur,1,0.00,0,0.0,0
+d523,d523,UberX,New Market,1,0.00,0,0.0,0
+d524,d524,Premium,Elephant Road,1,0.00,0,0.0,0
+d525,d525,Bike,Science Lab,1,0.00,0,0.0,0
+d526,d526,CNG,Green Road,1,0.00,0,0.0,0
+d527,d527,UberX,Panthapath,1,0.00,0,0.0,0
+d528,d528,Premium,Bashundhara,1,0.00,0,0.0,0
+d529,d529,Bike,Kuril,1,0.00,0,0.0,0
+d530,d530,CNG,Nikunja,1,0.00,0,0.0,0
+d531,d531,UberX,Airport,1,0.00,0,0.0,0
+d532,d532,Premium,Khilkhet,1,0.00,0,0.0,0
+d533,d533,Bike,Baridhara,1,0.00,0,0.0,0
+d534,d534,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d535,d535,UberX,Mohakhali,1,0.00,0,0.0,0
+d536,d536,Premium,Nakhalpara,1,0.00,0,0.0,0
+d537,d537,Bike,Eskaton,1,0.00,0,0.0,0
+d538,d538,CNG,Hatirpool,1,0.00,0,0.0,0
+d539,d539,UberX,Kakrail,1,0.00,0,0.0,0
+d540,d540,Premium,Bijoynagar,1,0.00,0,0.0,0
+d541,d541,Bike,Dhanmondi,1,0.00,0,0.0,0
+d542,d542,CNG,Gulshan-1,1,0.00,0,0.0,0
+d543,d543,UberX,Gulshan-2,1,0.00,0,0.0,0
+d544,d544,Premium,Banani,1,0.00,0,0.0,0
+d545,d545,Bike,Uttara-1,1,0.00,0,0.0,0
+d546,d546,CNG,Uttara-3,1,0.00,0,0.0,0
+d547,d547,UberX,Uttara-7,1,0.00,0,0.0,0
+d548,d548,Premium,Mirpur-1,1,0.00,0,0.0,0
+d549,d549,Bike,Mirpur-10,1,0.00,0,0.0,0
+d550,d550,CNG,Mirpur-12,1,0.00,0,0.0,0
+d551,d551,UberX,Mohammadpur,1,0.00,0,0.0,0
+d552,d552,Premium,Farmgate,1,0.00,0,0.0,0
+d553,d553,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d554,d554,CNG,Shahbagh,1,0.00,0,0.0,0
+d555,d555,UberX,Ramna,1,0.00,0,0.0,0
+d556,d556,Premium,Motijheel,1,0.00,0,0.0,0
+d557,d557,Bike,Paltan,1,0.00,0,0.0,0
+d558,d558,CNG,Kamalapur,1,0.00,0,0.0,0
+d559,d559,UberX,Jatrabari,1,0.00,0,0.0,0
+d560,d560,Premium,Demra,1,0.00,0,0.0,0
+d561,d561,Bike,Badda,1,0.00,0,0.0,0
+d562,d562,CNG,Rampura,1,0.00,0,0.0,0
+d563,d563,UberX,Malibagh,1,0.00,0,0.0,0
+d564,d564,Premium,Moghbazar,1,0.00,0,0.0,0
+d565,d565,Bike,Tejgaon,1,0.00,0,0.0,0
+d566,d566,CNG,Agargaon,1,0.00,0,0.0,0
+d567,d567,UberX,Shewrapara,1,0.00,0,0.0,0
+d568,d568,Premium,Kazipara,1,0.00,0,0.0,0
+d569,d569,Bike,Pallabi,1,0.00,0,0.0,0
+d570,d570,CNG,Kallyanpur,1,0.00,0,0.0,0
+d571,d571,UberX,Gabtoli,1,0.00,0,0.0,0
+d572,d572,Premium,Hazaribagh,1,0.00,0,0.0,0
+d573,d573,Bike,Lalbagh,1,0.00,0,0.0,0
+d574,d574,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d575,d575,UberX,Sadarghat,1,0.00,0,0.0,0
+d576,d576,Premium,Keraniganj,1,0.00,0,0.0,0
+d577,d577,Bike,Shyampur,1,0.00,0,0.0,0
+d578,d578,CNG,Postogola,1,0.00,0,0.0,0
+d579,d579,UberX,Wari,1,0.00,0,0.0,0
+d580,d580,Premium,Sutrapur,1,0.00,0,0.0,0
+d581,d581,Bike,Bangshal,1,0.00,0,0.0,0
+d582,d582,CNG,Islampur,1,0.00,0,0.0,0
+d583,d583,UberX,New Market,1,0.00,0,0.0,0
+d584,d584,Premium,Elephant Road,1,0.00,0,0.0,0
+d585,d585,Bike,Science Lab,1,0.00,0,0.0,0
+d586,d586,CNG,Green Road,1,0.00,0,0.0,0
+d587,d587,UberX,Panthapath,1,0.00,0,0.0,0
+d588,d588,Premium,Bashundhara,1,0.00,0,0.0,0
+d589,d589,Bike,Kuril,1,0.00,0,0.0,0
+d590,d590,CNG,Nikunja,1,0.00,0,0.0,0
+d591,d591,UberX,Airport,1,0.00,0,0.0,0
+d592,d592,Premium,Khilkhet,1,0.00,0,0.0,0
+d593,d593,Bike,Baridhara,1,0.00,0,0.0,0
+d594,d594,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d595,d595,UberX,Mohakhali,1,0.00,0,0.0,0
+d596,d596,Premium,Nakhalpara,1,0.00,0,0.0,0
+d597,d597,Bike,Eskaton,1,0.00,0,0.0,0
+d598,d598,CNG,Hatirpool,1,0.00,0,0.0,0
+d599,d599,UberX,Kakrail,1,0.00,0,0.0,0
+d600,d600,Premium,Bijoynagar,1,0.00,0,0.0,0
+d601,d601,Bike,Dhanmondi,1,0.00,0,0.0,0
+d602,d602,CNG,Gulshan-1,1,0.00,0,0.0,0
+d603,d603,UberX,Gulshan-2,1,0.00,0,0.0,0
+d604,d604,Premium,Banani,1,0.00,0,0.0,0
+d605,d605,Bike,Uttara-1,1,0.00,0,0.0,0
+d606,d606,CNG,Uttara-3,1,0.00,0,0.0,0
+d607,d607,UberX,Uttara-7,1,0.00,0,0.0,0
+d608,d608,Premium,Mirpur-1,1,0.00,0,0.0,0
+d609,d609,Bike,Mirpur-10,1,0.00,0,0.0,0
+d610,d610,CNG,Mirpur-12,1,0.00,0,0.0,0
+d611,d611,UberX,Mohammadpur,1,0.00,0,0.0,0
+d612,d612,Premium,Farmgate,1,0.00,0,0.0,0
+d613,d613,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d614,d614,CNG,Shahbagh,1,0.00,0,0.0,0
+d615,d615,UberX,Ramna,1,0.00,0,0.0,0
+d616,d616,Premium,Motijheel,1,0.00,0,0.0,0
+d617,d617,Bike,Paltan,1,0.00,0,0.0,0
+d618,d618,CNG,Kamalapur,1,0.00,0,0.0,0
+d619,d619,UberX,Jatrabari,1,0.00,0,0.0,0
+d620,d620,Premium,Demra,1,0.00,0,0.0,0
+d621,d621,Bike,Badda,1,0.00,0,0.0,0
+d622,d622,CNG,Rampura,1,0.00,0,0.0,0
+d623,d623,UberX,Malibagh,1,0.00,0,0.0,0
+d624,d624,Premium,Moghbazar,1,0.00,0,0.0,0
+d625,d625,Bike,Tejgaon,1,0.00,0,0.0,0
+d626,d626,CNG,Agargaon,1,0.00,0,0.0,0
+d627,d627,UberX,Shewrapara,1,0.00,0,0.0,0
+d628,d628,Premium,Kazipara,1,0.00,0,0.0,0
+d629,d629,Bike,Pallabi,1,0.00,0,0.0,0
+d630,d630,CNG,Kallyanpur,1,0.00,0,0.0,0
+d631,d631,UberX,Gabtoli,1,0.00,0,0.0,0
+d632,d632,Premium,Hazaribagh,1,0.00,0,0.0,0
+d633,d633,Bike,Lalbagh,1,0.00,0,0.0,0
+d634,d634,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d635,d635,UberX,Sadarghat,1,0.00,0,0.0,0
+d636,d636,Premium,Keraniganj,1,0.00,0,0.0,0
+d637,d637,Bike,Shyampur,1,0.00,0,0.0,0
+d638,d638,CNG,Postogola,1,0.00,0,0.0,0
+d639,d639,UberX,Wari,1,0.00,0,0.0,0
+d640,d640,Premium,Sutrapur,1,0.00,0,0.0,0
+d641,d641,Bike,Bangshal,1,0.00,0,0.0,0
+d642,d642,CNG,Islampur,1,0.00,0,0.0,0
+d643,d643,UberX,New Market,1,0.00,0,0.0,0
+d644,d644,Premium,Elephant Road,1,0.00,0,0.0,0
+d645,d645,Bike,Science Lab,1,0.00,0,0.0,0
+d646,d646,CNG,Green Road,1,0.00,0,0.0,0
+d647,d647,UberX,Panthapath,1,0.00,0,0.0,0
+d648,d648,Premium,Bashundhara,1,0.00,0,0.0,0
+d649,d649,Bike,Kuril,1,0.00,0,0.0,0
+d650,d650,CNG,Nikunja,1,0.00,0,0.0,0
+d651,d651,UberX,Airport,1,0.00,0,0.0,0
+d652,d652,Premium,Khilkhet,1,0.00,0,0.0,0
+d653,d653,Bike,Baridhara,1,0.00,0,0.0,0
+d654,d654,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d655,d655,UberX,Mohakhali,1,0.00,0,0.0,0
+d656,d656,Premium,Nakhalpara,1,0.00,0,0.0,0
+d657,d657,Bike,Eskaton,1,0.00,0,0.0,0
+d658,d658,CNG,Hatirpool,1,0.00,0,0.0,0
+d659,d659,UberX,Kakrail,1,0.00,0,0.0,0
+d660,d660,Premium,Bijoynagar,1,0.00,0,0.0,0
+d661,d661,Bike,Dhanmondi,1,0.00,0,0.0,0
+d662,d662,CNG,Gulshan-1,1,0.00,0,0.0,0
+d663,d663,UberX,Gulshan-2,1,0.00,0,0.0,0
+d664,d664,Premium,Banani,1,0.00,0,0.0,0
+d665,d665,Bike,Uttara-1,1,0.00,0,0.0,0
+d666,d666,CNG,Uttara-3,1,0.00,0,0.0,0
+d667,d667,UberX,Uttara-7,1,0.00,0,0.0,0
+d668,d668,Premium,Mirpur-1,1,0.00,0,0.0,0
+d669,d669,Bike,Mirpur-10,1,0.00,0,0.0,0
+d670,d670,CNG,Mirpur-12,1,0.00,0,0.0,0
+d671,d671,UberX,Mohammadpur,1,0.00,0,0.0,0
+d672,d672,Premium,Farmgate,1,0.00,0,0.0,0
+d673,d673,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d674,d674,CNG,Shahbagh,1,0.00,0,0.0,0
+d675,d675,UberX,Ramna,1,0.00,0,0.0,0
+d676,d676,Premium,Motijheel,1,0.00,0,0.0,0
+d677,d677,Bike,Paltan,1,0.00,0,0.0,0
+d678,d678,CNG,Kamalapur,1,0.00,0,0.0,0
+d679,d679,UberX,Jatrabari,1,0.00,0,0.0,0
+d680,d680,Premium,Demra,1,0.00,0,0.0,0
+d681,d681,Bike,Badda,1,0.00,0,0.0,0
+d682,d682,CNG,Rampura,1,0.00,0,0.0,0
+d683,d683,UberX,Malibagh,1,0.00,0,0.0,0
+d684,d684,Premium,Moghbazar,1,0.00,0,0.0,0
+d685,d685,Bike,Tejgaon,1,0.00,0,0.0,0
+d686,d686,CNG,Agargaon,1,0.00,0,0.0,0
+d687,d687,UberX,Shewrapara,1,0.00,0,0.0,0
+d688,d688,Premium,Kazipara,1,0.00,0,0.0,0
+d689,d689,Bike,Pallabi,1,0.00,0,0.0,0
+d690,d690,CNG,Kallyanpur,1,0.00,0,0.0,0
+d691,d691,UberX,Gabtoli,1,0.00,0,0.0,0
+d692,d692,Premium,Hazaribagh,1,0.00,0,0.0,0
+d693,d693,Bike,Lalbagh,1,0.00,0,0.0,0
+d694,d694,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d695,d695,UberX,Sadarghat,1,0.00,0,0.0,0
+d696,d696,Premium,Keraniganj,1,0.00,0,0.0,0
+d697,d697,Bike,Shyampur,1,0.00,0,0.0,0
+d698,d698,CNG,Postogola,1,0.00,0,0.0,0
+d699,d699,UberX,Wari,1,0.00,0,0.0,0
+d700,d700,Premium,Sutrapur,1,0.00,0,0.0,0
+d701,d701,Bike,Bangshal,1,0.00,0,0.0,0
+d702,d702,CNG,Islampur,1,0.00,0,0.0,0
+d703,d703,UberX,New Market,1,0.00,0,0.0,0
+d704,d704,Premium,Elephant Road,1,0.00,0,0.0,0
+d705,d705,Bike,Science Lab,1,0.00,0,0.0,0
+d706,d706,CNG,Green Road,1,0.00,0,0.0,0
+d707,d707,UberX,Panthapath,1,0.00,0,0.0,0
+d708,d708,Premium,Bashundhara,1,0.00,0,0.0,0
+d709,d709,Bike,Kuril,1,0.00,0,0.0,0
+d710,d710,CNG,Nikunja,1,0.00,0,0.0,0
+d711,d711,UberX,Airport,1,0.00,0,0.0,0
+d712,d712,Premium,Khilkhet,1,0.00,0,0.0,0
+d713,d713,Bike,Baridhara,1,0.00,0,0.0,0
+d714,d714,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d715,d715,UberX,Mohakhali,1,0.00,0,0.0,0
+d716,d716,Premium,Nakhalpara,1,0.00,0,0.0,0
+d717,d717,Bike,Eskaton,1,0.00,0,0.0,0
+d718,d718,CNG,Hatirpool,1,0.00,0,0.0,0
+d719,d719,UberX,Kakrail,1,0.00,0,0.0,0
+d720,d720,Premium,Bijoynagar,1,0.00,0,0.0,0
+d721,d721,Bike,Dhanmondi,1,0.00,0,0.0,0
+d722,d722,CNG,Gulshan-1,1,0.00,0,0.0,0
+d723,d723,UberX,Gulshan-2,1,0.00,0,0.0,0
+d724,d724,Premium,Banani,1,0.00,0,0.0,0
+d725,d725,Bike,Uttara-1,1,0.00,0,0.0,0
+d726,d726,CNG,Uttara-3,1,0.00,0,0.0,0
+d727,d727,UberX,Uttara-7,1,0.00,0,0.0,0
+d728,d728,Premium,Mirpur-1,1,0.00,0,0.0,0
+d729,d729,Bike,Mirpur-10,1,0.00,0,0.0,0
+d730,d730,CNG,Mirpur-12,1,0.00,0,0.0,0
+d731,d731,UberX,Mohammadpur,1,0.00,0,0.0,0
+d732,d732,Premium,Farmgate,1,0.00,0,0.0,0
+d733,d733,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d734,d734,CNG,Shahbagh,1,0.00,0,0.0,0
+d735,d735,UberX,Ramna,1,0.00,0,0.0,0
+d736,d736,Premium,Motijheel,1,0.00,0,0.0,0
+d737,d737,Bike,Paltan,1,0.00,0,0.0,0
+d738,d738,CNG,Kamalapur,1,0.00,0,0.0,0
+d739,d739,UberX,Jatrabari,1,0.00,0,0.0,0
+d740,d740,Premium,Demra,1,0.00,0,0.0,0
+d741,d741,Bike,Badda,1,0.00,0,0.0,0
+d742,d742,CNG,Rampura,1,0.00,0,0.0,0
+d743,d743,UberX,Malibagh,1,0.00,0,0.0,0
+d744,d744,Premium,Moghbazar,1,0.00,0,0.0,0
+d745,d745,Bike,Tejgaon,1,0.00,0,0.0,0
+d746,d746,CNG,Agargaon,1,0.00,0,0.0,0
+d747,d747,UberX,Shewrapara,1,0.00,0,0.0,0
+d748,d748,Premium,Kazipara,1,0.00,0,0.0,0
+d749,d749,Bike,Pallabi,1,0.00,0,0.0,0
+d750,d750,CNG,Kallyanpur,1,0.00,0,0.0,0
+d751,d751,UberX,Gabtoli,1,0.00,0,0.0,0
+d752,d752,Premium,Hazaribagh,1,0.00,0,0.0,0
+d753,d753,Bike,Lalbagh,1,0.00,0,0.0,0
+d754,d754,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d755,d755,UberX,Sadarghat,1,0.00,0,0.0,0
+d756,d756,Premium,Keraniganj,1,0.00,0,0.0,0
+d757,d757,Bike,Shyampur,1,0.00,0,0.0,0
+d758,d758,CNG,Postogola,1,0.00,0,0.0,0
+d759,d759,UberX,Wari,1,0.00,0,0.0,0
+d760,d760,Premium,Sutrapur,1,0.00,0,0.0,0
+d761,d761,Bike,Bangshal,1,0.00,0,0.0,0
+d762,d762,CNG,Islampur,1,0.00,0,0.0,0
+d763,d763,UberX,New Market,1,0.00,0,0.0,0
+d764,d764,Premium,Elephant Road,1,0.00,0,0.0,0
+d765,d765,Bike,Science Lab,1,0.00,0,0.0,0
+d766,d766,CNG,Green Road,1,0.00,0,0.0,0
+d767,d767,UberX,Panthapath,1,0.00,0,0.0,0
+d768,d768,Premium,Bashundhara,1,0.00,0,0.0,0
+d769,d769,Bike,Kuril,1,0.00,0,0.0,0
+d770,d770,CNG,Nikunja,1,0.00,0,0.0,0
+d771,d771,UberX,Airport,1,0.00,0,0.0,0
+d772,d772,Premium,Khilkhet,1,0.00,0,0.0,0
+d773,d773,Bike,Baridhara,1,0.00,0,0.0,0
+d774,d774,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d775,d775,UberX,Mohakhali,1,0.00,0,0.0,0
+d776,d776,Premium,Nakhalpara,1,0.00,0,0.0,0
+d777,d777,Bike,Eskaton,1,0.00,0,0.0,0
+d778,d778,CNG,Hatirpool,1,0.00,0,0.0,0
+d779,d779,UberX,Kakrail,1,0.00,0,0.0,0
+d780,d780,Premium,Bijoynagar,1,0.00,0,0.0,0
+d781,d781,Bike,Dhanmondi,1,0.00,0,0.0,0
+d782,d782,CNG,Gulshan-1,1,0.00,0,0.0,0
+d783,d783,UberX,Gulshan-2,1,0.00,0,0.0,0
+d784,d784,Premium,Banani,1,0.00,0,0.0,0
+d785,d785,Bike,Uttara-1,1,0.00,0,0.0,0
+d786,d786,CNG,Uttara-3,1,0.00,0,0.0,0
+d787,d787,UberX,Uttara-7,1,0.00,0,0.0,0
+d788,d788,Premium,Mirpur-1,1,0.00,0,0.0,0
+d789,d789,Bike,Mirpur-10,1,0.00,0,0.0,0
+d790,d790,CNG,Mirpur-12,1,0.00,0,0.0,0
+d791,d791,UberX,Mohammadpur,1,0.00,0,0.0,0
+d792,d792,Premium,Farmgate,1,0.00,0,0.0,0
+d793,d793,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d794,d794,CNG,Shahbagh,1,0.00,0,0.0,0
+d795,d795,UberX,Ramna,1,0.00,0,0.0,0
+d796,d796,Premium,Motijheel,1,0.00,0,0.0,0
+d797,d797,Bike,Paltan,1,0.00,0,0.0,0
+d798,d798,CNG,Kamalapur,1,0.00,0,0.0,0
+d799,d799,UberX,Jatrabari,1,0.00,0,0.0,0
+d800,d800,Premium,Demra,1,0.00,0,0.0,0
+d801,d801,Bike,Badda,1,0.00,0,0.0,0
+d802,d802,CNG,Rampura,1,0.00,0,0.0,0
+d803,d803,UberX,Malibagh,1,0.00,0,0.0,0
+d804,d804,Premium,Moghbazar,1,0.00,0,0.0,0
+d805,d805,Bike,Tejgaon,1,0.00,0,0.0,0
+d806,d806,CNG,Agargaon,1,0.00,0,0.0,0
+d807,d807,UberX,Shewrapara,1,0.00,0,0.0,0
+d808,d808,Premium,Kazipara,1,0.00,0,0.0,0
+d809,d809,Bike,Pallabi,1,0.00,0,0.0,0
+d810,d810,CNG,Kallyanpur,1,0.00,0,0.0,0
+d811,d811,UberX,Gabtoli,1,0.00,0,0.0,0
+d812,d812,Premium,Hazaribagh,1,0.00,0,0.0,0
+d813,d813,Bike,Lalbagh,1,0.00,0,0.0,0
+d814,d814,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d815,d815,UberX,Sadarghat,1,0.00,0,0.0,0
+d816,d816,Premium,Keraniganj,1,0.00,0,0.0,0
+d817,d817,Bike,Shyampur,1,0.00,0,0.0,0
+d818,d818,CNG,Postogola,1,0.00,0,0.0,0
+d819,d819,UberX,Wari,1,0.00,0,0.0,0
+d820,d820,Premium,Sutrapur,1,0.00,0,0.0,0
+d821,d821,Bike,Bangshal,1,0.00,0,0.0,0
+d822,d822,CNG,Islampur,1,0.00,0,0.0,0
+d823,d823,UberX,New Market,1,0.00,0,0.0,0
+d824,d824,Premium,Elephant Road,1,0.00,0,0.0,0
+d825,d825,Bike,Science Lab,1,0.00,0,0.0,0
+d826,d826,CNG,Green Road,1,0.00,0,0.0,0
+d827,d827,UberX,Panthapath,1,0.00,0,0.0,0
+d828,d828,Premium,Bashundhara,1,0.00,0,0.0,0
+d829,d829,Bike,Kuril,1,0.00,0,0.0,0
+d830,d830,CNG,Nikunja,1,0.00,0,0.0,0
+d831,d831,UberX,Airport,1,0.00,0,0.0,0
+d832,d832,Premium,Khilkhet,1,0.00,0,0.0,0
+d833,d833,Bike,Baridhara,1,0.00,0,0.0,0
+d834,d834,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d835,d835,UberX,Mohakhali,1,0.00,0,0.0,0
+d836,d836,Premium,Nakhalpara,1,0.00,0,0.0,0
+d837,d837,Bike,Eskaton,1,0.00,0,0.0,0
+d838,d838,CNG,Hatirpool,1,0.00,0,0.0,0
+d839,d839,UberX,Kakrail,1,0.00,0,0.0,0
+d840,d840,Premium,Bijoynagar,1,0.00,0,0.0,0
+d841,d841,Bike,Dhanmondi,1,0.00,0,0.0,0
+d842,d842,CNG,Gulshan-1,1,0.00,0,0.0,0
+d843,d843,UberX,Gulshan-2,1,0.00,0,0.0,0
+d844,d844,Premium,Banani,1,0.00,0,0.0,0
+d845,d845,Bike,Uttara-1,1,0.00,0,0.0,0
+d846,d846,CNG,Uttara-3,1,0.00,0,0.0,0
+d847,d847,UberX,Uttara-7,1,0.00,0,0.0,0
+d848,d848,Premium,Mirpur-1,1,0.00,0,0.0,0
+d849,d849,Bike,Mirpur-10,1,0.00,0,0.0,0
+d850,d850,CNG,Mirpur-12,1,0.00,0,0.0,0
+d851,d851,UberX,Mohammadpur,1,0.00,0,0.0,0
+d852,d852,Premium,Farmgate,1,0.00,0,0.0,0
+d853,d853,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d854,d854,CNG,Shahbagh,1,0.00,0,0.0,0
+d855,d855,UberX,Ramna,1,0.00,0,0.0,0
+d856,d856,Premium,Motijheel,1,0.00,0,0.0,0
+d857,d857,Bike,Paltan,1,0.00,0,0.0,0
+d858,d858,CNG,Kamalapur,1,0.00,0,0.0,0
+d859,d859,UberX,Jatrabari,1,0.00,0,0.0,0
+d860,d860,Premium,Demra,1,0.00,0,0.0,0
+d861,d861,Bike,Badda,1,0.00,0,0.0,0
+d862,d862,CNG,Rampura,1,0.00,0,0.0,0
+d863,d863,UberX,Malibagh,1,0.00,0,0.0,0
+d864,d864,Premium,Moghbazar,1,0.00,0,0.0,0
+d865,d865,Bike,Tejgaon,1,0.00,0,0.0,0
+d866,d866,CNG,Agargaon,1,0.00,0,0.0,0
+d867,d867,UberX,Shewrapara,1,0.00,0,0.0,0
+d868,d868,Premium,Kazipara,1,0.00,0,0.0,0
+d869,d869,Bike,Pallabi,1,0.00,0,0.0,0
+d870,d870,CNG,Kallyanpur,1,0.00,0,0.0,0
+d871,d871,UberX,Gabtoli,1,0.00,0,0.0,0
+d872,d872,Premium,Hazaribagh,1,0.00,0,0.0,0
+d873,d873,Bike,Lalbagh,1,0.00,0,0.0,0
+d874,d874,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d875,d875,UberX,Sadarghat,1,0.00,0,0.0,0
+d876,d876,Premium,Keraniganj,1,0.00,0,0.0,0
+d877,d877,Bike,Shyampur,1,0.00,0,0.0,0
+d878,d878,CNG,Postogola,1,0.00,0,0.0,0
+d879,d879,UberX,Wari,1,0.00,0,0.0,0
+d880,d880,Premium,Sutrapur,1,0.00,0,0.0,0
+d881,d881,Bike,Bangshal,1,0.00,0,0.0,0
+d882,d882,CNG,Islampur,1,0.00,0,0.0,0
+d883,d883,UberX,New Market,1,0.00,0,0.0,0
+d884,d884,Premium,Elephant Road,1,0.00,0,0.0,0
+d885,d885,Bike,Science Lab,1,0.00,0,0.0,0
+d886,d886,CNG,Green Road,1,0.00,0,0.0,0
+d887,d887,UberX,Panthapath,1,0.00,0,0.0,0
+d888,d888,Premium,Bashundhara,1,0.00,0,0.0,0
+d889,d889,Bike,Kuril,1,0.00,0,0.0,0
+d890,d890,CNG,Nikunja,1,0.00,0,0.0,0
+d891,d891,UberX,Airport,1,0.00,0,0.0,0
+d892,d892,Premium,Khilkhet,1,0.00,0,0.0,0
+d893,d893,Bike,Baridhara,1,0.00,0,0.0,0
+d894,d894,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d895,d895,UberX,Mohakhali,1,0.00,0,0.0,0
+d896,d896,Premium,Nakhalpara,1,0.00,0,0.0,0
+d897,d897,Bike,Eskaton,1,0.00,0,0.0,0
+d898,d898,CNG,Hatirpool,1,0.00,0,0.0,0
+d899,d899,UberX,Kakrail,1,0.00,0,0.0,0
+d900,d900,Premium,Bijoynagar,1,0.00,0,0.0,0
+d901,d901,Bike,Dhanmondi,1,0.00,0,0.0,0
+d902,d902,CNG,Gulshan-1,1,0.00,0,0.0,0
+d903,d903,UberX,Gulshan-2,1,0.00,0,0.0,0
+d904,d904,Premium,Banani,1,0.00,0,0.0,0
+d905,d905,Bike,Uttara-1,1,0.00,0,0.0,0
+d906,d906,CNG,Uttara-3,1,0.00,0,0.0,0
+d907,d907,UberX,Uttara-7,1,0.00,0,0.0,0
+d908,d908,Premium,Mirpur-1,1,0.00,0,0.0,0
+d909,d909,Bike,Mirpur-10,1,0.00,0,0.0,0
+d910,d910,CNG,Mirpur-12,1,0.00,0,0.0,0
+d911,d911,UberX,Mohammadpur,1,0.00,0,0.0,0
+d912,d912,Premium,Farmgate,1,0.00,0,0.0,0
+d913,d913,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d914,d914,CNG,Shahbagh,1,0.00,0,0.0,0
+d915,d915,UberX,Ramna,1,0.00,0,0.0,0
+d916,d916,Premium,Motijheel,1,0.00,0,0.0,0
+d917,d917,Bike,Paltan,1,0.00,0,0.0,0
+d918,d918,CNG,Kamalapur,1,0.00,0,0.0,0
+d919,d919,UberX,Jatrabari,1,0.00,0,0.0,0
+d920,d920,Premium,Demra,1,0.00,0,0.0,0
+d921,d921,Bike,Badda,1,0.00,0,0.0,0
+d922,d922,CNG,Rampura,1,0.00,0,0.0,0
+d923,d923,UberX,Malibagh,1,0.00,0,0.0,0
+d924,d924,Premium,Moghbazar,1,0.00,0,0.0,0
+d925,d925,Bike,Tejgaon,1,0.00,0,0.0,0
+d926,d926,CNG,Agargaon,1,0.00,0,0.0,0
+d927,d927,UberX,Shewrapara,1,0.00,0,0.0,0
+d928,d928,Premium,Kazipara,1,0.00,0,0.0,0
+d929,d929,Bike,Pallabi,1,0.00,0,0.0,0
+d930,d930,CNG,Kallyanpur,1,0.00,0,0.0,0
+d931,d931,UberX,Gabtoli,1,0.00,0,0.0,0
+d932,d932,Premium,Hazaribagh,1,0.00,0,0.0,0
+d933,d933,Bike,Lalbagh,1,0.00,0,0.0,0
+d934,d934,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d935,d935,UberX,Sadarghat,1,0.00,0,0.0,0
+d936,d936,Premium,Keraniganj,1,0.00,0,0.0,0
+d937,d937,Bike,Shyampur,1,0.00,0,0.0,0
+d938,d938,CNG,Postogola,1,0.00,0,0.0,0
+d939,d939,UberX,Wari,1,0.00,0,0.0,0
+d940,d940,Premium,Sutrapur,1,0.00,0,0.0,0
+d941,d941,Bike,Bangshal,1,0.00,0,0.0,0
+d942,d942,CNG,Islampur,1,0.00,0,0.0,0
+d943,d943,UberX,New Market,1,0.00,0,0.0,0
+d944,d944,Premium,Elephant Road,1,0.00,0,0.0,0
+d945,d945,Bike,Science Lab,1,0.00,0,0.0,0
+d946,d946,CNG,Green Road,1,0.00,0,0.0,0
+d947,d947,UberX,Panthapath,1,0.00,0,0.0,0
+d948,d948,Premium,Bashundhara,1,0.00,0,0.0,0
+d949,d949,Bike,Kuril,1,0.00,0,0.0,0
+d950,d950,CNG,Nikunja,1,0.00,0,0.0,0
+d951,d951,UberX,Airport,1,0.00,0,0.0,0
+d952,d952,Premium,Khilkhet,1,0.00,0,0.0,0
+d953,d953,Bike,Baridhara,1,0.00,0,0.0,0
+d954,d954,CNG,DOHS Mohakhali,1,0.00,0,0.0,0
+d955,d955,UberX,Mohakhali,1,0.00,0,0.0,0
+d956,d956,Premium,Nakhalpara,1,0.00,0,0.0,0
+d957,d957,Bike,Eskaton,1,0.00,0,0.0,0
+d958,d958,CNG,Hatirpool,1,0.00,0,0.0,0
+d959,d959,UberX,Kakrail,1,0.00,0,0.0,0
+d960,d960,Premium,Bijoynagar,1,0.00,0,0.0,0
+d961,d961,Bike,Dhanmondi,1,0.00,0,0.0,0
+d962,d962,CNG,Gulshan-1,1,0.00,0,0.0,0
+d963,d963,UberX,Gulshan-2,1,0.00,0,0.0,0
+d964,d964,Premium,Banani,1,0.00,0,0.0,0
+d965,d965,Bike,Uttara-1,1,0.00,0,0.0,0
+d966,d966,CNG,Uttara-3,1,0.00,0,0.0,0
+d967,d967,UberX,Uttara-7,1,0.00,0,0.0,0
+d968,d968,Premium,Mirpur-1,1,0.00,0,0.0,0
+d969,d969,Bike,Mirpur-10,1,0.00,0,0.0,0
+d970,d970,CNG,Mirpur-12,1,0.00,0,0.0,0
+d971,d971,UberX,Mohammadpur,1,0.00,0,0.0,0
+d972,d972,Premium,Farmgate,1,0.00,0,0.0,0
+d973,d973,Bike,Karwan Bazar,1,0.00,0,0.0,0
+d974,d974,CNG,Shahbagh,1,0.00,0,0.0,0
+d975,d975,UberX,Ramna,1,0.00,0,0.0,0
+d976,d976,Premium,Motijheel,1,0.00,0,0.0,0
+d977,d977,Bike,Paltan,1,0.00,0,0.0,0
+d978,d978,CNG,Kamalapur,1,0.00,0,0.0,0
+d979,d979,UberX,Jatrabari,1,0.00,0,0.0,0
+d980,d980,Premium,Demra,1,0.00,0,0.0,0
+d981,d981,Bike,Badda,1,0.00,0,0.0,0
+d982,d982,CNG,Rampura,1,0.00,0,0.0,0
+d983,d983,UberX,Malibagh,1,0.00,0,0.0,0
+d984,d984,Premium,Moghbazar,1,0.00,0,0.0,0
+d985,d985,Bike,Tejgaon,1,0.00,0,0.0,0
+d986,d986,CNG,Agargaon,1,0.00,0,0.0,0
+d987,d987,UberX,Shewrapara,1,0.00,0,0.0,0
+d988,d988,Premium,Kazipara,1,0.00,0,0.0,0
+d989,d989,Bike,Pallabi,1,0.00,0,0.0,0
+d990,d990,CNG,Kallyanpur,1,0.00,0,0.0,0
+d991,d991,UberX,Gabtoli,1,0.00,0,0.0,0
+d992,d992,Premium,Hazaribagh,1,0.00,0,0.0,0
+d993,d993,Bike,Lalbagh,1,0.00,0,0.0,0
+d994,d994,CNG,Chawk Bazar,1,0.00,0,0.0,0
+d995,d995,UberX,Sadarghat,1,0.00,0,0.0,0
+d996,d996,Premium,Keraniganj,1,0.00,0,0.0,0
+d997,d997,Bike,Shyampur,1,0.00,0,0.0,0
+d998,d998,CNG,Postogola,1,0.00,0,0.0,0
+d999,d999,UberX,Wari,1,0.00,0,0.0,0
+d1000,d1000,Premium,Sutrapur,1,0.00,0,0.0,0
+d1001,d1001,Bike,Kakrail,1,0.00,0,0.0,0
+d1002,d1002,Bike,Airport,1,0.00,0,0.0,0

@@ -9,6 +9,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <cctype>
+#include <cstdio>
 #include <windows.h>
 #include <conio.h>
 
@@ -224,6 +226,30 @@ public:
 class RideShareSystem
 {
 private:
+    struct PricingConfig
+    {
+        double bikeBase = 81.0;
+        double bikePerKm = 7.8;
+        double cngBase = 125.0;
+        double cngPerKm = 28.4;
+        double uberXBase = 331.0;
+        double uberXPerKm = 22.6;
+        double premiumBase = 627.0;
+        double premiumPerKm = 36.2;
+
+        double trafficWeight = 0.4;
+        double weatherWeight = 0.5;
+
+        double demandTier1Ratio = 0.3;
+        double demandTier1Surge = 0.20;
+        double demandTier2Ratio = 0.6;
+        double demandTier2Surge = 0.15;
+        double demandTier3Ratio = 1.0;
+        double demandTier3Surge = 0.05;
+
+        double maxTotalSurge = 1.0;
+    };
+
     vector<Location> locations;
     vector<User> users;
     vector<Driver> drivers;
@@ -249,6 +275,7 @@ private:
     vector<WeatherData> weatherData;
     vector<Ride> rides;
     Admin admin;
+    PricingConfig pricing;
 
 private:
     unique_ptr<Vehicle> makeVehicle(int choice) const
@@ -306,6 +333,199 @@ string nowTime()
 
         cout << "\r[Status] Destination reached! Ride completed successfully.\n";
         cout << "====================================\n\n";
+    }
+
+    double getVehicleBase(const string &vehicleType) const
+    {
+        if (vehicleType == "Bike") return pricing.bikeBase;
+        if (vehicleType == "CNG") return pricing.cngBase;
+        if (vehicleType == "UberX") return pricing.uberXBase;
+        if (vehicleType == "Premium") return pricing.premiumBase;
+        return 0.0;
+    }
+
+    double getVehiclePerKm(const string &vehicleType) const
+    {
+        if (vehicleType == "Bike") return pricing.bikePerKm;
+        if (vehicleType == "CNG") return pricing.cngPerKm;
+        if (vehicleType == "UberX") return pricing.uberXPerKm;
+        if (vehicleType == "Premium") return pricing.premiumPerKm;
+        return 0.0;
+    }
+
+    string lowerCopy(string s) const
+    {
+        transform(s.begin(), s.end(), s.begin(), [](unsigned char c) {
+            return static_cast<char>(tolower(c));
+        });
+        return s;
+    }
+
+    int findLocationIndexCaseInsensitive(const string &name) const
+    {
+        string target = lowerCopy(name);
+        for (size_t i = 0; i < locations.size(); ++i)
+        {
+            if (lowerCopy(locations[i].name) == target)
+                return static_cast<int>(i);
+        }
+        return -1;
+    }
+
+    bool sanitizePricingConfig(bool verbose)
+    {
+        bool changed = false;
+
+        auto clampVal = [&](double &value, double lo, double hi, const string &label) {
+            double old = value;
+            value = min(max(value, lo), hi);
+            if (old != value)
+            {
+                changed = true;
+                if (verbose)
+                    cout << "[Pricing Config] " << label << " out of range. Clamped to " << value << "\n";
+            }
+        };
+
+        clampVal(pricing.bikeBase, 0.0, 5000.0, "bike_base");
+        clampVal(pricing.cngBase, 0.0, 5000.0, "cng_base");
+        clampVal(pricing.uberXBase, 0.0, 5000.0, "uberx_base");
+        clampVal(pricing.premiumBase, 0.0, 5000.0, "premium_base");
+
+        clampVal(pricing.bikePerKm, 0.0, 500.0, "bike_per_km");
+        clampVal(pricing.cngPerKm, 0.0, 500.0, "cng_per_km");
+        clampVal(pricing.uberXPerKm, 0.0, 500.0, "uberx_per_km");
+        clampVal(pricing.premiumPerKm, 0.0, 500.0, "premium_per_km");
+
+        clampVal(pricing.trafficWeight, 0.0, 2.0, "traffic_weight");
+        clampVal(pricing.weatherWeight, 0.0, 2.0, "weather_weight");
+
+        clampVal(pricing.demandTier1Ratio, 0.05, 3.0, "demand_tier1_ratio");
+        clampVal(pricing.demandTier2Ratio, 0.05, 3.0, "demand_tier2_ratio");
+        clampVal(pricing.demandTier3Ratio, 0.05, 3.0, "demand_tier3_ratio");
+
+        clampVal(pricing.demandTier1Surge, 0.0, 1.0, "demand_tier1_surge");
+        clampVal(pricing.demandTier2Surge, 0.0, 1.0, "demand_tier2_surge");
+        clampVal(pricing.demandTier3Surge, 0.0, 1.0, "demand_tier3_surge");
+
+        clampVal(pricing.maxTotalSurge, 0.0, 3.0, "max_total_surge");
+
+        if (!(pricing.demandTier1Ratio < pricing.demandTier2Ratio && pricing.demandTier2Ratio < pricing.demandTier3Ratio))
+        {
+            pricing.demandTier1Ratio = 0.3;
+            pricing.demandTier2Ratio = 0.6;
+            pricing.demandTier3Ratio = 1.0;
+            changed = true;
+            if (verbose)
+                cout << "[Pricing Config] Invalid ratio order. Reset tiers to defaults: 0.3, 0.6, 1.0\n";
+        }
+
+        return changed;
+    }
+
+    void savePricingConfig()
+    {
+        sanitizePricingConfig(false);
+        ofstream fout("pricing_config.csv");
+        fout << "key,value\n";
+        fout << "bike_base," << pricing.bikeBase << "\n";
+        fout << "bike_per_km," << pricing.bikePerKm << "\n";
+        fout << "cng_base," << pricing.cngBase << "\n";
+        fout << "cng_per_km," << pricing.cngPerKm << "\n";
+        fout << "uberx_base," << pricing.uberXBase << "\n";
+        fout << "uberx_per_km," << pricing.uberXPerKm << "\n";
+        fout << "premium_base," << pricing.premiumBase << "\n";
+        fout << "premium_per_km," << pricing.premiumPerKm << "\n";
+        fout << "traffic_weight," << pricing.trafficWeight << "\n";
+        fout << "weather_weight," << pricing.weatherWeight << "\n";
+        fout << "demand_tier1_ratio," << pricing.demandTier1Ratio << "\n";
+        fout << "demand_tier1_surge," << pricing.demandTier1Surge << "\n";
+        fout << "demand_tier2_ratio," << pricing.demandTier2Ratio << "\n";
+        fout << "demand_tier2_surge," << pricing.demandTier2Surge << "\n";
+        fout << "demand_tier3_ratio," << pricing.demandTier3Ratio << "\n";
+        fout << "demand_tier3_surge," << pricing.demandTier3Surge << "\n";
+        fout << "max_total_surge," << pricing.maxTotalSurge << "\n";
+    }
+
+    void loadPricingConfig()
+    {
+        ifstream fin("pricing_config.csv");
+        if (!fin)
+        {
+            savePricingConfig();
+            return;
+        }
+
+        string line;
+        while (getline(fin, line))
+        {
+            if (line.empty()) continue;
+            stringstream ss(line);
+            string key, value;
+            getline(ss, key, ',');
+            getline(ss, value, ',');
+            if (key == "key" || value.empty()) continue;
+
+            double v = 0.0;
+            try
+            {
+                v = stod(value);
+            }
+            catch (...)
+            {
+                continue;
+            }
+
+            if (key == "bike_base") pricing.bikeBase = v;
+            else if (key == "bike_per_km") pricing.bikePerKm = v;
+            else if (key == "cng_base") pricing.cngBase = v;
+            else if (key == "cng_per_km") pricing.cngPerKm = v;
+            else if (key == "uberx_base") pricing.uberXBase = v;
+            else if (key == "uberx_per_km") pricing.uberXPerKm = v;
+            else if (key == "premium_base") pricing.premiumBase = v;
+            else if (key == "premium_per_km") pricing.premiumPerKm = v;
+            else if (key == "traffic_weight") pricing.trafficWeight = v;
+            else if (key == "weather_weight") pricing.weatherWeight = v;
+            else if (key == "demand_tier1_ratio") pricing.demandTier1Ratio = v;
+            else if (key == "demand_tier1_surge") pricing.demandTier1Surge = v;
+            else if (key == "demand_tier2_ratio") pricing.demandTier2Ratio = v;
+            else if (key == "demand_tier2_surge") pricing.demandTier2Surge = v;
+            else if (key == "demand_tier3_ratio") pricing.demandTier3Ratio = v;
+            else if (key == "demand_tier3_surge") pricing.demandTier3Surge = v;
+            else if (key == "max_total_surge") pricing.maxTotalSurge = v;
+        }
+
+        if (sanitizePricingConfig(true))
+            savePricingConfig();
+    }
+
+    bool geocodeLocationName(const string &query, double &lat, double &lon)
+    {
+        ostringstream cmd;
+        cmd << "python geocode_lookup.py \"" << query << "\" > geocode_result.tmp";
+        int result = system(cmd.str().c_str());
+        if (result != 0)
+            return false;
+
+        ifstream fin("geocode_result.tmp");
+        string line;
+        bool ok = false;
+        if (getline(fin, line))
+        {
+            stringstream ss(line);
+            string latStr, lonStr;
+            getline(ss, latStr, ',');
+            getline(ss, lonStr, ',');
+            if (!latStr.empty() && !lonStr.empty())
+            {
+                lat = stod(latStr);
+                lon = stod(lonStr);
+                ok = true;
+            }
+        }
+
+        remove("geocode_result.tmp");
+        return ok;
     }
     double calcDistance(const Location &a, const Location &b)
     {
@@ -497,53 +717,38 @@ double getTrafficFactor(string locName)
     double calculateDynamicFare(double distance, const string &vehicleType,
                                 int availableDrivers, int activeUsers, string locName)
     {
-        double baseCharge = 0.0;
-        double perKmRate = 0.0;
-
-        if (vehicleType == "Bike")
-        {
-            baseCharge = 81.0;
-            perKmRate = 7.8;
-        }
-        else if (vehicleType == "CNG")
-        {
-            baseCharge = 125.0;
-            perKmRate = 28.4;
-        }
-        else if (vehicleType == "UberX")
-        {
-            baseCharge = 331.0;
-            perKmRate = 22.6;
-        }
-        else if (vehicleType == "Premium")
-        {
-            baseCharge = 627.0;
-            perKmRate = 36.2;
-        }
+        double baseCharge = getVehicleBase(vehicleType);
+        double perKmRate = getVehiclePerKm(vehicleType);
 
         double baseFare = baseCharge + (distance * perKmRate);
-        double trafficSurge = (getTrafficFactor(locName) - 1.0) * 0.4;
-        double weatherSurge = (getWeatherFactor(locName) - 1.0) * 0.5;
+        double trafficSurge = (getTrafficFactor(locName) - 1.0) * pricing.trafficWeight;
+        double weatherSurge = (getWeatherFactor(locName) - 1.0) * pricing.weatherWeight;
 
         double demandSurge = 0.0;
         if (activeUsers > 0)
         {
             double ratio = (double)availableDrivers / (double)activeUsers;
-            if (ratio < 0.3)
+            if (ratio < pricing.demandTier1Ratio)
             {
-                demandSurge = 0.20;
+                demandSurge = pricing.demandTier1Surge;
             }
-            else if (ratio < 0.6)
+            else if (ratio < pricing.demandTier2Ratio)
             {
-                demandSurge = 0.15;
+                demandSurge = pricing.demandTier2Surge;
             }
-            else if (ratio < 1.0)
+            else if (ratio < pricing.demandTier3Ratio)
             {
-                demandSurge = 0.05;
+                demandSurge = pricing.demandTier3Surge;
             }
         }
 
-        double finalFare = baseFare * (1.0 + trafficSurge + weatherSurge + demandSurge);
+        double totalSurge = trafficSurge + weatherSurge + demandSurge;
+        if (totalSurge > pricing.maxTotalSurge)
+            totalSurge = pricing.maxTotalSurge;
+        if (totalSurge < 0.0)
+            totalSurge = 0.0;
+
+        double finalFare = baseFare * (1.0 + totalSurge);
         return round(finalFare / 5.0) * 5.0;
     }
 
@@ -1092,8 +1297,10 @@ double getTrafficFactor(string locName)
         {
             cout << "\n--- ADMIN LOCATION MENU ---\n";
             cout << "1. View\n";
-            cout << "2. Update\n";
-            cout << "3. Back\n";
+            cout << "2. Add (Manual Lat/Lon)\n";
+            cout << "3. Add By Geocoding (Name -> Lat/Lon)\n";
+            cout << "4. Delete Location\n";
+            cout << "5. Back\n";
 
             int ch = InputValidator<int>::getInput("Choice: ");
             if (ch == 1)
@@ -1119,6 +1326,21 @@ double getTrafficFactor(string locName)
 
                 double la = InputValidator<double>::getInput("Latitude : ");
                 double lo = InputValidator<double>::getInput("Longitude: ");
+
+                int dupIdx = findLocationIndexCaseInsensitive(n);
+                if (dupIdx >= 0)
+                {
+                    cout << "A location named '" << locations[static_cast<size_t>(dupIdx)].name << "' already exists at "
+                         << fixed << setprecision(6) << locations[static_cast<size_t>(dupIdx)].lat << ", "
+                         << locations[static_cast<size_t>(dupIdx)].lon << "\n";
+                    int keep = InputValidator<int>::getInput("Add duplicate anyway? (1=Yes, 0=No): ");
+                    if (keep != 1)
+                    {
+                        cout << "Cancelled.\n";
+                        continue;
+                    }
+                }
+
                 locations.push_back(Location(n, la, lo));
                 cout << "Location added successfully.\n";
                 saveLocations();
@@ -1126,8 +1348,218 @@ double getTrafficFactor(string locName)
             }
             else if (ch == 3)
             {
+                string n;
+                cin.ignore(1000, '\n');
+                cout << "Location name to geocode: ";
+                getline(cin, n);
+
+                if (n.empty())
+                {
+                    cout << "Invalid: Location name cannot be empty.\n";
+                    continue;
+                }
+
+                double la = 0.0;
+                double lo = 0.0;
+                if (!geocodeLocationName(n, la, lo))
+                {
+                    cout << "Geocoding failed. Ensure internet is available and location name is valid.\n";
+                    continue;
+                }
+
+                cout << "Matched coordinates: " << fixed << setprecision(6) << la << ", " << lo << "\n";
+
+                int dupIdx = findLocationIndexCaseInsensitive(n);
+                if (dupIdx >= 0)
+                {
+                    cout << "A location named '" << locations[static_cast<size_t>(dupIdx)].name << "' already exists at "
+                         << fixed << setprecision(6) << locations[static_cast<size_t>(dupIdx)].lat << ", "
+                         << locations[static_cast<size_t>(dupIdx)].lon << "\n";
+                    int keep = InputValidator<int>::getInput("Add duplicate anyway? (1=Yes, 0=No): ");
+                    if (keep != 1)
+                    {
+                        cout << "Cancelled.\n";
+                        continue;
+                    }
+                }
+
+                locations.push_back(Location(n, la, lo));
+                saveLocations();
+                cout << "Location added via geocoding and saved.\n";
+            }
+            else if (ch == 4)
+            {
+                if (locations.empty())
+                {
+                    cout << "No locations available to delete.\n";
+                    continue;
+                }
+
+                showLocations();
+                int idx = InputValidator<int>::getInput("Enter location serial to delete (0 to cancel): ");
+                if (idx == 0)
+                {
+                    cout << "Delete cancelled.\n";
+                    continue;
+                }
+
+                if (idx < 1 || idx > static_cast<int>(locations.size()))
+                {
+                    cout << "Invalid serial.\n";
+                    continue;
+                }
+
+                const Location &target = locations[static_cast<size_t>(idx - 1)];
+                for (const auto &d : drivers)
+                {
+                    if (d.getLocation() == target.name)
+                    {
+                        cout << "Cannot delete. Driver '" << d.getUsername() << "' is currently assigned to this location.\n";
+                        cout << "Move/delete related drivers first, then retry.\n";
+                        idx = -1;
+                        break;
+                    }
+                }
+
+                if (idx == -1)
+                {
+                    continue;
+                }
+
+                cout << "Delete location '" << target.name << "' (" << fixed << setprecision(6) << target.lat << ", " << target.lon << ") ?\n";
+                int confirm = InputValidator<int>::getInput("Confirm delete (1=Yes, 0=No): ");
+                if (confirm != 1)
+                {
+                    cout << "Delete cancelled.\n";
+                    continue;
+                }
+
+                locations.erase(locations.begin() + (idx - 1));
+                saveLocations();
+                cout << "Location deleted and file updated.\n";
+            }
+            else if (ch == 5)
+            {
                 system("cls");
                 break;
+            }
+        }
+    }
+
+    void adminPricingEdit()
+    {
+        while (true)
+        {
+            cout << "\n--- ADMIN PRICING EDITOR ---\n";
+            cout << "1. View Config\n";
+            cout << "2. Update Vehicle Base/Per-Km\n";
+            cout << "3. Update Traffic/Weather Weights\n";
+            cout << "4. Update Demand Tiers\n";
+            cout << "5. Update Max Surge Cap\n";
+            cout << "6. Back\n";
+
+            int ch = InputValidator<int>::getInput("Choice: ");
+            if (ch == 1)
+            {
+                cout << "\nVehicle Pricing:\n";
+                cout << "Bike    : base=" << pricing.bikeBase << ", perKm=" << pricing.bikePerKm << "\n";
+                cout << "CNG     : base=" << pricing.cngBase << ", perKm=" << pricing.cngPerKm << "\n";
+                cout << "UberX   : base=" << pricing.uberXBase << ", perKm=" << pricing.uberXPerKm << "\n";
+                cout << "Premium : base=" << pricing.premiumBase << ", perKm=" << pricing.premiumPerKm << "\n";
+
+                cout << "\nSurge Weights:\n";
+                cout << "trafficWeight=" << pricing.trafficWeight << ", weatherWeight=" << pricing.weatherWeight << "\n";
+
+                cout << "\nDemand Tiers:\n";
+                cout << "tier1 if ratio < " << pricing.demandTier1Ratio << " => +" << pricing.demandTier1Surge << "\n";
+                cout << "tier2 if ratio < " << pricing.demandTier2Ratio << " => +" << pricing.demandTier2Surge << "\n";
+                cout << "tier3 if ratio < " << pricing.demandTier3Ratio << " => +" << pricing.demandTier3Surge << "\n";
+                cout << "maxTotalSurge=" << pricing.maxTotalSurge << "\n";
+                cout << "\nPress any key to back...";
+                _getch();
+                system("cls");
+            }
+            else if (ch == 2)
+            {
+                cout << "\nSelect Vehicle: 1.Bike 2.CNG 3.UberX 4.Premium\n";
+                int v = InputValidator<int>::getInput("Vehicle choice: ");
+                double base = InputValidator<double>::getInput("New base fare: ");
+                double perKm = InputValidator<double>::getInput("New per-km fare: ");
+                if (base < 0 || base > 5000 || perKm < 0 || perKm > 500)
+                {
+                    cout << "Invalid: base must be 0-5000 and per-km must be 0-500.\n";
+                    continue;
+                }
+
+                if (v == 1) { pricing.bikeBase = base; pricing.bikePerKm = perKm; }
+                else if (v == 2) { pricing.cngBase = base; pricing.cngPerKm = perKm; }
+                else if (v == 3) { pricing.uberXBase = base; pricing.uberXPerKm = perKm; }
+                else if (v == 4) { pricing.premiumBase = base; pricing.premiumPerKm = perKm; }
+                else { cout << "Invalid vehicle choice.\n"; continue; }
+
+                savePricingConfig();
+                cout << "Vehicle pricing updated.\n";
+            }
+            else if (ch == 3)
+            {
+                double tw = InputValidator<double>::getInput("Traffic weight: ");
+                double ww = InputValidator<double>::getInput("Weather weight: ");
+                if (tw < 0 || tw > 2.0 || ww < 0 || ww > 2.0)
+                {
+                    cout << "Invalid: weights must be within 0.0 to 2.0.\n";
+                    continue;
+                }
+                pricing.trafficWeight = tw;
+                pricing.weatherWeight = ww;
+                savePricingConfig();
+                cout << "Surge weights updated.\n";
+            }
+            else if (ch == 4)
+            {
+                cout << "Enter tier ratio and surge values in increasing ratio order.\n";
+                double r1 = InputValidator<double>::getInput("Tier1 ratio (<): ");
+                double s1 = InputValidator<double>::getInput("Tier1 surge: ");
+                double r2 = InputValidator<double>::getInput("Tier2 ratio (<): ");
+                double s2 = InputValidator<double>::getInput("Tier2 surge: ");
+                double r3 = InputValidator<double>::getInput("Tier3 ratio (<): ");
+                double s3 = InputValidator<double>::getInput("Tier3 surge: ");
+
+                bool ratiosOk = (r1 >= 0.05 && r1 <= 3.0) && (r2 >= 0.05 && r2 <= 3.0) && (r3 >= 0.05 && r3 <= 3.0) && (r1 < r2 && r2 < r3);
+                bool surgeOk = (s1 >= 0.0 && s1 <= 1.0) && (s2 >= 0.0 && s2 <= 1.0) && (s3 >= 0.0 && s3 <= 1.0);
+                if (!ratiosOk || !surgeOk)
+                {
+                    cout << "Invalid tier setup. Need 0.05<=ratio<=3.0, r1<r2<r3, and 0.0<=surge<=1.0.\n";
+                    continue;
+                }
+
+                pricing.demandTier1Ratio = r1;
+                pricing.demandTier1Surge = s1;
+                pricing.demandTier2Ratio = r2;
+                pricing.demandTier2Surge = s2;
+                pricing.demandTier3Ratio = r3;
+                pricing.demandTier3Surge = s3;
+                savePricingConfig();
+                cout << "Demand tiers updated.\n";
+            }
+            else if (ch == 5)
+            {
+                double cap = InputValidator<double>::getInput("Max total surge (additional): ");
+                if (cap < 0 || cap > 3.0)
+                {
+                    cout << "Invalid cap. Must be between 0.0 and 3.0.\n";
+                    continue;
+                }
+                pricing.maxTotalSurge = cap;
+                savePricingConfig();
+                cout << "Max surge cap updated.\n";
+            }
+            else if (ch == 6)
+            {
+                break;
+            }
+            else
+            {
+                cout << "Invalid choice.\n";
             }
         }
     }
@@ -1314,7 +1746,8 @@ double getTrafficFactor(string locName)
             cout << "4. Edit Weather\n";
             cout << "5. List Users\n";
             cout << "6. List Drivers\n";
-            cout << "7. Back\n";
+            cout << "7. Edit Pricing Logic\n";
+            cout << "8. Back\n";
 
             int ch = InputValidator<int>::getInput("Choice: ");
             if (ch == 1)
@@ -1343,6 +1776,10 @@ double getTrafficFactor(string locName)
             }
             else if (ch == 7)
             {
+                adminPricingEdit();
+            }
+            else if (ch == 8)
+            {
                 system("cls");
                 break;
             }
@@ -1357,6 +1794,7 @@ public:
     RideShareSystem()
     {
         loadLocations();
+        loadPricingConfig();
         loadUsers();
         loadDrivers();
         loadRides();
@@ -1371,6 +1809,7 @@ public:
         saveLocations();
         saveTraffic();
         saveWeather();
+        savePricingConfig();
     }
 
     void showHeader()

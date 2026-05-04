@@ -376,6 +376,9 @@ string nowTime()
         getline(ss, hourStr, ',');
         getline(ss, factorStr, ',');
 
+        if (loc == "Location" || yearStr == "Year" || factorStr == "TrafficMultiplier")
+            continue;
+
         trafficData.push_back(TrafficData(loc, stoi(yearStr), stoi(monthStr), stoi(dayStr), stoi(hourStr), stod(factorStr)));
     }
 }
@@ -401,9 +404,51 @@ void loadWeather()
         getline(ss, hourStr, ',');
         getline(ss, factorStr, ',');
 
+        if (loc == "Location" || yearStr == "Year" || factorStr == "WeatherMultiplier")
+            continue;
+
         weatherData.push_back(WeatherData(loc, stoi(yearStr), stoi(monthStr), stoi(dayStr), stoi(hourStr), stod(factorStr)));
     }
 }
+
+    string describeTrafficFactor(double factor) const
+    {
+        if (factor >= 1.9)
+            return "Heavy Traffic";
+        if (factor >= 1.5)
+            return "Medium Traffic";
+        if (factor >= 1.2)
+            return "Light-Medium Traffic";
+        return "Free Flow";
+    }
+
+    string describeWeatherFactor(double factor) const
+    {
+        if (factor >= 1.8)
+            return "Heavy showers / very bad weather";
+        if (factor >= 1.5)
+            return "Rainy";
+        if (factor >= 1.3)
+            return "Foggy or windy";
+        return "Clear / normal";
+    }
+
+    bool refreshLiveDataForRequest(const Location &from)
+    {
+        ostringstream cmd;
+        cmd << "python live_updater.py request \"" << from.name << "\" "
+            << fixed << setprecision(6) << from.lat << " " << from.lon;
+
+        int result = system(cmd.str().c_str());
+        if (result != 0)
+            return false;
+
+        trafficData.clear();
+        weatherData.clear();
+        loadTraffic();
+        loadWeather();
+        return true;
+    }
 
 
 double getTrafficFactor(string locName)
@@ -720,10 +765,10 @@ double getTrafficFactor(string locName)
     void adminListUsers()
     {
         system("cls");
-        cout << "\n--- USERS LIST ---\n";
+        cout << "\n--- USERS LIST (username, password, wallet) ---\n";
         for (size_t i = 0; i < users.size(); ++i)
         {
-            cout << "  " << i + 1 << ". " << users[i].getUsername() << "\n";
+            cout << "  " << i + 1 << ". " << users[i].getUsername() << ", " << users[i].getPassword() << ", " << fixed << setprecision(2) << users[i].getWallet() << "\n";
         }
         int sel = InputValidator<int>::getInput("Enter user serial to view/delete details (0 to go back): ");
         if (sel >= 1 && sel <= (int)users.size())
@@ -746,10 +791,12 @@ double getTrafficFactor(string locName)
     void adminListDrivers()
     {
         system("cls");
-        cout << "\n--- DRIVERS LIST ---\n";
+        cout << "\n--- DRIVERS LIST (username,vehicle,location,available,totalEarn,tripCount,avgRating,ratingCount) ---\n";
         for (size_t i = 0; i < drivers.size(); ++i)
         {
-            cout << "  " << i + 1 << ". " << drivers[i].getUsername() << " (" << drivers[i].getVehicleType() << ")\n";
+            cout << "  " << i + 1 << ". " << drivers[i].getUsername() << ", " << drivers[i].getVehicleType() << ", " << drivers[i].getLocation() << ", "
+                 << (drivers[i].isAvailable() ? "1" : "0") << ", " << fixed << setprecision(2) << drivers[i].getTotalEarn() << ", " << drivers[i].getTripCount() << ", "
+                 << fixed << setprecision(1) << drivers[i].getAvgRating() << ", " << drivers[i].getRatingCount() << "\n";
         }
         int sel = InputValidator<int>::getInput("Enter driver serial to view/delete details (0 to go back): ");
         if (sel >= 1 && sel <= (int)drivers.size())
@@ -815,6 +862,21 @@ double getTrafficFactor(string locName)
 
         Location from = locations[static_cast<size_t>(fromI - 1)];
         Location to = locations[static_cast<size_t>(toI - 1)];
+
+        if (refreshLiveDataForRequest(from))
+        {
+            double liveTraffic = getTrafficFactor(from.name);
+            double liveWeather = getWeatherFactor(from.name);
+            cout << "\nLive conditions for pickup location: " << from.name << "\n";
+            cout << "Traffic factor : " << fixed << setprecision(1) << liveTraffic
+                 << " (" << describeTrafficFactor(liveTraffic) << ")\n";
+            cout << "Weather factor : " << fixed << setprecision(1) << liveWeather
+                 << " (" << describeWeatherFactor(liveWeather) << ")\n";
+        }
+        else
+        {
+            cout << "\nWarning: Live API refresh failed. Using existing cached traffic/weather data.\n";
+        }
 
         int dIdx = findNearestDriver(from, selectedVehicle);
         if (dIdx < 0)
@@ -1084,7 +1146,7 @@ double getTrafficFactor(string locName)
             {
                 while (true)
                 {
-                    cout << "\nCurrent Traffic Data (hour, factor):\n";
+                    cout << "\nCurrent Traffic Data (location, YYYY-MM-DD, hour, factor):\n";
                     if (trafficData.empty())
                     {
                         cout << "No traffic data loaded.\n";
@@ -1093,8 +1155,10 @@ double getTrafficFactor(string locName)
                     {
                         for (const auto &t : trafficData)
                         {
-                            cout << t.hour << ":00, " << fixed << setprecision(1) << t.factor << "\n";
+                            cout << t.location << ", " << t.year << "-" << setw(2) << setfill('0') << t.month << "-" << setw(2) << setfill('0') << t.day
+                                 << ", " << t.hour << ":00, " << fixed << setprecision(1) << t.factor << "\n";
                         }
+                        cout << setfill(' ');
                     }
                     cout << "\nPress any key to back...";
                     _getch();
@@ -1167,7 +1231,7 @@ double getTrafficFactor(string locName)
             {
                 while (true)
                 {
-                    cout << "\nCurrent Weather Data (hour, factor):\n";
+                    cout << "\nCurrent Weather Data (location, YYYY-MM-DD, hour, factor):\n";
                     if (weatherData.empty())
                     {
                         cout << "No weather data loaded.\n";
@@ -1176,8 +1240,10 @@ double getTrafficFactor(string locName)
                     {
                         for (const auto &w : weatherData)
                         {
-                            cout << w.hour << ":00, " << fixed << setprecision(1) << w.factor << "\n";
+                            cout << w.location << ", " << w.year << "-" << setw(2) << setfill('0') << w.month << "-" << setw(2) << setfill('0') << w.day
+                                 << ", " << w.hour << ":00, " << fixed << setprecision(1) << w.factor << "\n";
                         }
+                        cout << setfill(' ');
                     }
                     cout << "\nPress any key to back...";
                     _getch();

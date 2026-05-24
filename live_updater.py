@@ -231,14 +231,49 @@ def run_request_update(location_name, lat, lon):
     write_live_csvs(traffic_rows, weather_rows)
     print("Success: request-time traffic.csv and weather.csv updated.")
 
+def run_sync_all():
+    """Reads location.csv and updates all locations at once."""
+    if not os.path.exists("location.csv"):
+        print("Error: location.csv not found. Cannot sync.")
+        return
+
+    print("Syncing live data for all locations...")
+    traffic_rows = [["Location", "Year", "Month", "Day", "Hour", "TrafficMultiplier"]]
+    weather_rows = [["Location", "Year", "Month", "Day", "Hour", "WeatherMultiplier"]]
+    now = datetime.now()
+
+    with open("location.csv", "r", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if not row: continue
+            name, lat, lon = row
+            try:
+                t_mult = get_thana_traffic(lat, lon)
+                weather_data = get_real_weather(lat, lon)
+                
+                traffic_rows.append([name, now.year, now.month, now.day, now.hour, f"{t_mult:.1f}"])
+                weather_rows.append([name, now.year, now.month, now.day, now.hour, f"{weather_data['multiplier']:.1f}"])
+                print(f"  [+] Updated {name}", flush=True)
+            except Exception as e:
+                print(f"  [-] Failed {name}: {e}", flush=True)
+
+    write_live_csvs(traffic_rows, weather_rows)
+    print("Success: All locations synced with latest API data.")
+
 if __name__ == "__main__":
-    if len(sys.argv) >= 2 and sys.argv[1].lower() == "request":
-        if len(sys.argv) != 5:
-            print("Usage: python live_updater.py request <location_name> <lat> <lon>")
-            sys.exit(1)
-        run_request_update(sys.argv[2], sys.argv[3], sys.argv[4])
-    elif len(sys.argv) >= 2 and sys.argv[1].lower() == "once":
-        run_live_update()
+    if len(sys.argv) >= 2:
+        mode = sys.argv[1].lower()
+        if mode == "request":
+            if len(sys.argv) != 5:
+                print("Usage: python live_updater.py request <location_name> <lat> <lon>")
+                sys.exit(1)
+            run_request_update(sys.argv[2], sys.argv[3], sys.argv[4])
+        elif mode == "sync":
+            run_sync_all()
+        elif mode == "once":
+            run_live_update()
+        else:
+            run_live_update()
     else:
         # First update immediately
         run_live_update()

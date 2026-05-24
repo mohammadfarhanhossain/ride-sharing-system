@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include <cstdlib>
 #include <cmath>
 #include <ctime>
@@ -9,6 +9,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <functional>
+#include <memory>
 #include <cctype>
 #include <cstdio>
 #include <windows.h>
@@ -56,6 +58,7 @@ public:
 
     double getTotalRevenue() const { return totalRevenue; }
     double getDriverPart(double fare) const { return fare * (1.0 - commissionRate); }
+    double getCommissionRate() const { return commissionRate; }
 };
 
 Company company;
@@ -80,22 +83,55 @@ class User : public Person
 {
 private:
     Money wallet;
+    Money cardBalance;
+    vector<string> favoriteLocations;
 
 public:
-    User(string u, string p, Money w = Money(1000)) : Person(u, p), wallet(w) {}
+    User(string u, string p, Money w = Money(1000), Money card = Money(1500))
+        : Person(u, p), wallet(w), cardBalance(card) {}
 
 
     Money getWallet() const { return wallet; }
+    Money getCardBalance() const { return cardBalance; }
+
+    vector<string> getFavoriteLocations() const { return favoriteLocations; }
+    
+    void addFavorite(const string &locName) {
+        for (const auto &f : favoriteLocations) {
+            if (f == locName) return;
+        }
+        if (favoriteLocations.size() < 5) {
+            favoriteLocations.push_back(locName);
+        }
+    }
+    
+    void removeFavorite(const string &locName) {
+        favoriteLocations.erase(
+            remove(favoriteLocations.begin(), favoriteLocations.end(), locName),
+            favoriteLocations.end()
+        );
+    }
+    
+    void setFavorites(const vector<string> &favs) { favoriteLocations = favs; }
 
     // function overloading
     void addMoney(int x) { wallet = wallet + Money((double)x); }
     void addMoney(double x) { wallet = wallet + Money(x); }
+    void addCardMoney(double x) { cardBalance = cardBalance + Money(x); }
 
     bool pay(double fare)
     {
         if (wallet.get() < fare)
             return false;
         wallet = wallet - Money(fare);
+        return true;
+    }
+
+    bool payCard(double fare)
+    {
+        if (cardBalance.get() < fare)
+            return false;
+        cardBalance = cardBalance - Money(fare);
         return true;
     }
 };
@@ -192,6 +228,216 @@ public:
     double speed() const override { return 24; }
 };
 
+class Intercity : public Vehicle
+{
+public:
+    string name() const override { return "Intercity"; }
+    double factor() const override { return 30.7; }
+    double speed() const override { return 33; }
+};
+
+enum class RideStatus
+{
+    Requesting,
+    Matched,
+    DriverEnRoute,
+    OnTrip,
+    Completed,
+    Cancelled
+};
+
+inline string rideStatusLabel(RideStatus s)
+{
+    switch (s)
+    {
+    case RideStatus::Requesting:
+        return "Requesting";
+    case RideStatus::Matched:
+        return "Matched";
+    case RideStatus::DriverEnRoute:
+        return "DriverEnRoute";
+    case RideStatus::OnTrip:
+        return "OnTrip";
+    case RideStatus::Completed:
+        return "Completed";
+    case RideStatus::Cancelled:
+        return "Cancelled";
+    default:
+        return "Unknown";
+    }
+}
+
+struct TripQuote
+{
+    double baseCharge = 0;
+    double perKmRate = 0;
+    double distance = 0;
+    double baseFare = 0;
+    double trafficFactor = 1;
+    double weatherFactor = 1;
+    double trafficSurge = 0;
+    double weatherSurge = 0;
+    double demandSurge = 0;
+    double totalSurge = 0;
+    double supplyRatio = 0;
+    double finalFare = 0;
+    double promoSavings = 0;
+    string promoCode;
+};
+
+struct PricingConfig
+{
+    double bikeBase = 81.0;
+    double bikePerKm = 7.8;
+    double cngBase = 125.0;
+    double cngPerKm = 28.4;
+    double uberXBase = 331.0;
+    double uberXPerKm = 22.6;
+    double premiumBase = 627.0;
+    double premiumPerKm = 36.2;
+    double intercityBase = 127.1599332;
+    double intercityPerKm = 30.7022556;
+
+    double trafficWeight = 0.4;
+    double weatherWeight = 0.5;
+
+    double demandTier1Ratio = 0.3;
+    double demandTier1Surge = 0.20;
+    double demandTier2Ratio = 0.6;
+    double demandTier2Surge = 0.15;
+    double demandTier3Ratio = 1.0;
+    double demandTier3Surge = 0.05;
+
+    double maxTotalSurge = 1.0;
+    bool dynamicPricingEnabled = true;
+};
+
+class IFareCalculator
+{
+public:
+    virtual ~IFareCalculator() = default;
+    virtual TripQuote compute(double distance, const string &vehicleType, int availableDrivers,
+                              int activeUsers, const string &locName) = 0;
+};
+
+class DynamicFareCalculator : public IFareCalculator
+{
+    PricingConfig *pricing;
+    function<double(const string &)> trafficFn;
+    function<double(const string &)> weatherFn;
+    function<double(const string &)> baseFn;
+    function<double(const string &)> perKmFn;
+
+public:
+    DynamicFareCalculator(PricingConfig *p, function<double(const string &)> tf,
+                          function<double(const string &)> wf, function<double(const string &)> bf,
+                          function<double(const string &)> pf)
+        : pricing(p), trafficFn(move(tf)), weatherFn(move(wf)), baseFn(move(bf)), perKmFn(move(pf))
+    {
+    }
+
+    TripQuote compute(double distance, const string &vehicleType, int availableDrivers,
+                      int activeUsers, const string &locName) override
+    {
+        TripQuote q;
+        q.distance = distance;
+        q.baseCharge = baseFn(vehicleType);
+        q.perKmRate = perKmFn(vehicleType);
+        q.baseFare = q.baseCharge + (distance * q.perKmRate);
+        q.trafficFactor = trafficFn(locName);
+        q.weatherFactor = weatherFn(locName);
+        q.trafficSurge = (q.trafficFactor - 1.0) * pricing->trafficWeight;
+        q.weatherSurge = (q.weatherFactor - 1.0) * pricing->weatherWeight;
+
+        q.demandSurge = 0.0;
+        if (activeUsers > 0)
+        {
+            q.supplyRatio = (double)availableDrivers / (double)activeUsers;
+            if (q.supplyRatio < pricing->demandTier1Ratio)
+                q.demandSurge = pricing->demandTier1Surge;
+            else if (q.supplyRatio < pricing->demandTier2Ratio)
+                q.demandSurge = pricing->demandTier2Surge;
+            else if (q.supplyRatio < pricing->demandTier3Ratio)
+                q.demandSurge = pricing->demandTier3Surge;
+        }
+
+        q.totalSurge = q.trafficSurge + q.weatherSurge + q.demandSurge;
+        if (q.totalSurge > pricing->maxTotalSurge)
+            q.totalSurge = pricing->maxTotalSurge;
+        if (q.totalSurge < 0.0)
+            q.totalSurge = 0.0;
+        if (!pricing->dynamicPricingEnabled)
+            q.totalSurge = 0.0;
+
+        q.finalFare = round(q.baseFare * (1.0 + q.totalSurge) * 100.0) / 100.0;
+        return q;
+    }
+};
+
+class PromoFareDecorator : public IFareCalculator
+{
+    unique_ptr<IFareCalculator> inner;
+    double discountFraction;
+    string codeLabel;
+
+public:
+    PromoFareDecorator(unique_ptr<IFareCalculator> in, double discountFrac, const string &code)
+        : inner(move(in)), discountFraction(discountFrac), codeLabel(code)
+    {
+    }
+
+    TripQuote compute(double distance, const string &vehicleType, int availableDrivers,
+                      int activeUsers, const string &locName) override
+    {
+        TripQuote q = inner->compute(distance, vehicleType, availableDrivers, activeUsers, locName);
+        if (discountFraction > 0.0 && !codeLabel.empty())
+        {
+            q.promoSavings = round(q.finalFare * discountFraction * 100.0) / 100.0;
+            q.finalFare = round((q.finalFare - q.promoSavings) * 100.0) / 100.0;
+            q.promoCode = codeLabel;
+        }
+        return q;
+    }
+};
+
+class CancellationPolicy
+{
+    double feeAfterConfirm;
+
+public:
+    explicit CancellationPolicy(double fee = 75.0) : feeAfterConfirm(fee) {}
+    double cancellationFee(bool afterConfirm) const { return afterConfirm ? feeAfterConfirm : 0.0; }
+};
+
+class IPaymentMethod
+{
+public:
+    virtual ~IPaymentMethod() = default;
+    virtual string label() const = 0;
+    virtual bool charge(User &user, double amount) = 0;
+};
+
+class WalletPaymentMethod : public IPaymentMethod
+{
+public:
+    string label() const override { return "Wallet"; }
+    bool charge(User &u, double amount) override { return u.pay(amount); }
+};
+
+class CashPaymentMethod : public IPaymentMethod
+{
+public:
+    string label() const override { return "Cash"; }
+    bool charge(User &, double) override { return true; }
+};
+
+class CardPaymentMethod : public IPaymentMethod
+{
+public:
+    string label() const override { return "Card"; }
+    bool charge(User &u, double amount) override { return u.payCard(amount); }
+};
+
 struct Ride
 {
     string timeStamp;
@@ -203,19 +449,59 @@ struct Ride
     double fare;
     string vehicle;
     string payment;
+    string status;
+    double estimateFare;
+    double surgeFraction;
+    double promoDiscount;
+    string promoCode;
 
-    Ride() : distance(0), fare(0), payment("Wallet") {}
+    Ride()
+        : distance(0), fare(0), payment("Wallet"), status("Completed"), estimateFare(0), surgeFraction(0),
+          promoDiscount(0)
+    {
+    }
+};
+
+class ReceiptFormatter
+{
+public:
+    static void printTripReceipt(const TripQuote &est, const Ride &trip, const Company &co,
+                                 const string &paymentLabel)
+    {
+        cout << "\n========== TRIP RECEIPT ==========\n";
+        cout << fixed << setprecision(2);
+        cout << "Trip time      : " << trip.timeStamp << "\n";
+        cout << "Route          : " << trip.from << " -> " << trip.to << "\n";
+        cout << "Distance       : " << trip.distance << " km\n";
+        cout << "Vehicle        : " << trip.vehicle << "\n";
+        cout << "Trip status    : " << trip.status << "\n";
+        cout << "Payment        : " << paymentLabel << "\n\n";
+
+        cout << "Fare breakdown:\n";
+        cout << "  Upfront estimate : " << est.finalFare + est.promoSavings << " taka\n";
+        if (est.promoSavings > 0.0)
+            cout << "  Promo (" << est.promoCode << ")   : -" << est.promoSavings << " taka\n";
+        cout << "  Subtotal (quote): " << est.finalFare << " taka\n";
+        cout << "  Surge total      : +" << (est.totalSurge * 100.0) << "%\n";
+        double platFee = trip.fare * co.getCommissionRate();
+        cout << "  Platform fee     : " << platFee << " taka\n";
+        cout << "  Driver payout    : " << co.getDriverPart(trip.fare) << " taka\n";
+        cout << "  Amount charged   : " << trip.fare << " taka\n";
+        cout << "==================================\n";
+    }
 };
 
 template <typename T>
 class InputValidator {
 public:
-    static T getInput(const string &value) {
+    static T getInput(const string &prompt) {
         T x;
         while (true) {
-            cout << value;
-            if (cin >> x)
+            cout << prompt;
+            if (cin >> x) {
+                cin.ignore(1000, '\n');
                 return x;
+            }
             cin.clear();
             cin.ignore(1000, '\n');
             cout << "Invalid input. Try again.\n";
@@ -223,31 +509,34 @@ public:
     }
 };
 
+// Specialization for string to handle spaces
+template <>
+class InputValidator<string> {
+public:
+    static string getInput(const string &prompt) {
+        string x;
+        while (true) {
+            cout << prompt;
+            // Skip leading whitespace (like newlines from previous cin >> calls)
+            getline(cin >> ws, x);
+            if (!x.empty())
+                return x;
+            cout << "Input cannot be empty. Try again.\n";
+        }
+    }
+};
+
 class RideShareSystem
 {
 private:
-    struct PricingConfig
+    struct GeocodeCandidate
     {
-        double bikeBase = 81.0;
-        double bikePerKm = 7.8;
-        double cngBase = 125.0;
-        double cngPerKm = 28.4;
-        double uberXBase = 331.0;
-        double uberXPerKm = 22.6;
-        double premiumBase = 627.0;
-        double premiumPerKm = 36.2;
+        string display;
+        double lat;
+        double lon;
 
-        double trafficWeight = 0.4;
-        double weatherWeight = 0.5;
-
-        double demandTier1Ratio = 0.3;
-        double demandTier1Surge = 0.20;
-        double demandTier2Ratio = 0.6;
-        double demandTier2Surge = 0.15;
-        double demandTier3Ratio = 1.0;
-        double demandTier3Surge = 0.05;
-
-        double maxTotalSurge = 1.0;
+        GeocodeCandidate(const string &d, double la, double lo)
+            : display(d), lat(la), lon(lo) {}
     };
 
     vector<Location> locations;
@@ -276,26 +565,10 @@ private:
     vector<Ride> rides;
     Admin admin;
     PricingConfig pricing;
+    CancellationPolicy cancelPolicy;
 
-private:
-    unique_ptr<Vehicle> makeVehicle(int choice) const
-    {
-        switch (choice)
-        {
-        case 1:
-            return make_unique<Bike>();
-        case 2:
-            return make_unique<CNG>();
-        case 3:
-            return make_unique<UberX>();
-        case 4:
-            return make_unique<Premium>();
-        default:
-            return nullptr;
-        }
-    }
-
-string nowTime()
+    // Simulation and Map utilities
+    string nowTime()
 {
     time_t currentTime = time(0);
     tm *localTime = localtime(&currentTime);
@@ -310,28 +583,25 @@ string nowTime()
     void simulateRideProgress(int driverWaitTime, int journeyTime)
     {
         cout << "\n====================================\n";
-        cout << "    LIVE RIDE TRACKING SYSTEM       \n";
+        cout << "    LIVE TRIP (Uber-style phases)    \n";
         cout << "====================================\n\n";
 
-        // Phase 1: Driver arriving
-        cout << "[Status] Driver is on the way...\n";
+        cout << "[Phase: " << rideStatusLabel(RideStatus::DriverEnRoute) << "] Driver en route...\n";
         for (int t = driverWaitTime; t > 0; t--)
         {
-            // \r moves cursor to beginning of same line, flush sathe screen sathe sathe update kora hoy
-            cout << "\r[ETA] Driver arriving in: " << t << " mins   " << flush;
-            Sleep(1000); // 1 second in milliseconds
+            cout << "\r[ETA pickup] " << t << " mins   " << flush;
+            Sleep(1000);
         }
-        cout << "\r[Status] Driver has arrived! Hop in.         \n\n";
+        cout << "\r[Phase: " << rideStatusLabel(RideStatus::OnTrip) << "] Driver arrived — trip starting.        \n\n";
 
-        // Phase 2: Ride in progress
-        cout << "[Status] Ride Started!\n";
+        cout << "[Phase: " << rideStatusLabel(RideStatus::OnTrip) << "] En route to destination...\n";
         for (int t = journeyTime; t > 0; t--)
         {
-            cout << "\r[Ride] Time to Destination: " << t << " mins remaining...  " << flush;
-            Sleep(1000); // 1 second in milliseconds
+            cout << "\r[ETA dropoff] " << t << " mins remaining...  " << flush;
+            Sleep(1000);
         }
 
-        cout << "\r[Status] Destination reached! Ride completed successfully.\n";
+        cout << "\r[Phase: " << rideStatusLabel(RideStatus::Completed) << "] Trip completed.\n";
         cout << "====================================\n\n";
     }
 
@@ -341,6 +611,7 @@ string nowTime()
         if (vehicleType == "CNG") return pricing.cngBase;
         if (vehicleType == "UberX") return pricing.uberXBase;
         if (vehicleType == "Premium") return pricing.premiumBase;
+        if (vehicleType == "Intercity") return pricing.intercityBase;
         return 0.0;
     }
 
@@ -350,6 +621,7 @@ string nowTime()
         if (vehicleType == "CNG") return pricing.cngPerKm;
         if (vehicleType == "UberX") return pricing.uberXPerKm;
         if (vehicleType == "Premium") return pricing.premiumPerKm;
+        if (vehicleType == "Intercity") return pricing.intercityPerKm;
         return 0.0;
     }
 
@@ -361,12 +633,63 @@ string nowTime()
         return s;
     }
 
+    string normalizeKey(string s) const
+    {
+        s = lowerCopy(s);
+
+        size_t start = 0;
+        while (start < s.size() && isspace(static_cast<unsigned char>(s[start])))
+            ++start;
+
+        size_t end = s.size();
+        while (end > start && isspace(static_cast<unsigned char>(s[end - 1])))
+            --end;
+
+        string trimmed = s.substr(start, end - start);
+        string out;
+        out.reserve(trimmed.size());
+        bool prevSpace = false;
+        for (char c : trimmed)
+        {
+            bool nowSpace = isspace(static_cast<unsigned char>(c)) != 0;
+            if (nowSpace)
+            {
+                if (!prevSpace)
+                    out.push_back(' ');
+            }
+            else
+            {
+                out.push_back(c);
+            }
+            prevSpace = nowSpace;
+        }
+        return out;
+    }
+
+    void sortLocationsByName()
+    {
+        stable_sort(locations.begin(), locations.end(), [&](const Location &a, const Location &b) {
+            string ak = normalizeKey(a.name);
+            string bk = normalizeKey(b.name);
+            if (ak != bk)
+                return ak < bk;
+            return a.name < b.name;
+        });
+    }
+
+    double approxDistanceKm(double lat1, double lon1, double lat2, double lon2) const
+    {
+        double dx = lat1 - lat2;
+        double dy = lon1 - lon2;
+        return sqrt(dx * dx + dy * dy) * 111.0;
+    }
+
     int findLocationIndexCaseInsensitive(const string &name) const
     {
-        string target = lowerCopy(name);
+        string target = normalizeKey(name);
         for (size_t i = 0; i < locations.size(); ++i)
         {
-            if (lowerCopy(locations[i].name) == target)
+            if (normalizeKey(locations[i].name) == target)
                 return static_cast<int>(i);
         }
         return -1;
@@ -396,6 +719,8 @@ string nowTime()
         clampVal(pricing.cngPerKm, 0.0, 500.0, "cng_per_km");
         clampVal(pricing.uberXPerKm, 0.0, 500.0, "uberx_per_km");
         clampVal(pricing.premiumPerKm, 0.0, 500.0, "premium_per_km");
+        clampVal(pricing.intercityBase, 0.0, 5000.0, "intercity_base");
+        clampVal(pricing.intercityPerKm, 0.0, 500.0, "intercity_per_km");
 
         clampVal(pricing.trafficWeight, 0.0, 2.0, "traffic_weight");
         clampVal(pricing.weatherWeight, 0.0, 2.0, "weather_weight");
@@ -436,6 +761,8 @@ string nowTime()
         fout << "uberx_per_km," << pricing.uberXPerKm << "\n";
         fout << "premium_base," << pricing.premiumBase << "\n";
         fout << "premium_per_km," << pricing.premiumPerKm << "\n";
+        fout << "intercity_base," << pricing.intercityBase << "\n";
+        fout << "intercity_per_km," << pricing.intercityPerKm << "\n";
         fout << "traffic_weight," << pricing.trafficWeight << "\n";
         fout << "weather_weight," << pricing.weatherWeight << "\n";
         fout << "demand_tier1_ratio," << pricing.demandTier1Ratio << "\n";
@@ -445,6 +772,7 @@ string nowTime()
         fout << "demand_tier3_ratio," << pricing.demandTier3Ratio << "\n";
         fout << "demand_tier3_surge," << pricing.demandTier3Surge << "\n";
         fout << "max_total_surge," << pricing.maxTotalSurge << "\n";
+        fout << "dynamic_pricing_enabled," << (pricing.dynamicPricingEnabled ? "1" : "0") << "\n";
     }
 
     void loadPricingConfig()
@@ -484,6 +812,8 @@ string nowTime()
             else if (key == "uberx_per_km") pricing.uberXPerKm = v;
             else if (key == "premium_base") pricing.premiumBase = v;
             else if (key == "premium_per_km") pricing.premiumPerKm = v;
+            else if (key == "intercity_base") pricing.intercityBase = v;
+            else if (key == "intercity_per_km") pricing.intercityPerKm = v;
             else if (key == "traffic_weight") pricing.trafficWeight = v;
             else if (key == "weather_weight") pricing.weatherWeight = v;
             else if (key == "demand_tier1_ratio") pricing.demandTier1Ratio = v;
@@ -493,13 +823,14 @@ string nowTime()
             else if (key == "demand_tier3_ratio") pricing.demandTier3Ratio = v;
             else if (key == "demand_tier3_surge") pricing.demandTier3Surge = v;
             else if (key == "max_total_surge") pricing.maxTotalSurge = v;
+            else if (key == "dynamic_pricing_enabled") pricing.dynamicPricingEnabled = (v != 0);
         }
 
         if (sanitizePricingConfig(true))
             savePricingConfig();
     }
 
-    bool geocodeLocationName(const string &query, double &lat, double &lon)
+    bool geocodeLocationCandidates(const string &query, vector<GeocodeCandidate> &out)
     {
         ostringstream cmd;
         cmd << "python geocode_lookup.py \"" << query << "\" > geocode_result.tmp";
@@ -509,35 +840,41 @@ string nowTime()
 
         ifstream fin("geocode_result.tmp");
         string line;
-        bool ok = false;
-        if (getline(fin, line))
+        while (getline(fin, line))
         {
+            if (line.empty())
+                continue;
+
             stringstream ss(line);
-            string latStr, lonStr;
-            getline(ss, latStr, ',');
-            getline(ss, lonStr, ',');
-            if (!latStr.empty() && !lonStr.empty())
+            string display, latStr, lonStr;
+            getline(ss, display, '\t');
+            getline(ss, latStr, '\t');
+            getline(ss, lonStr, '\t');
+            if (!display.empty() && !latStr.empty() && !lonStr.empty())
             {
-                lat = stod(latStr);
-                lon = stod(lonStr);
-                ok = true;
+                try
+                {
+                    out.push_back(GeocodeCandidate(display, stod(latStr), stod(lonStr)));
+                }
+                catch (...)
+                {
+                    continue;
+                }
             }
         }
 
         remove("geocode_result.tmp");
-        return ok;
+        return !out.empty();
     }
     double calcDistance(const Location &a, const Location &b)
     {
         // very simple distance logic (beginner friendly)
-        double dx = a.lat - b.lat;
-        double dy = a.lon - b.lon;
-        return sqrt(dx * dx + dy * dy) * 111.0;
+        return approxDistanceKm(a.lat, a.lon, b.lat, b.lon);
     }
 
     int findLocationIndex(const string &name) {
         auto it = find_if(locations.begin(), locations.end(),
-                      [&](const Location& loc){ return loc.name == name; });
+                      [&](const Location& loc){ return normalizeKey(loc.name) == normalizeKey(name); });
         return (it != locations.end()) ? (it - locations.begin()) : -1;
     }
 
@@ -587,19 +924,29 @@ string nowTime()
     {
         if (line.empty()) continue;
         stringstream ss(line);
-        string loc, yearStr, monthStr, dayStr, hourStr, factorStr;
+        vector<string> columns;
+        string col;
+        while (getline(ss, col, ',')) {
+            columns.push_back(col);
+        }
 
-        getline(ss, loc, ',');
-        getline(ss, yearStr, ',');
-        getline(ss, monthStr, ',');
-        getline(ss, dayStr, ',');
-        getline(ss, hourStr, ',');
-        getline(ss, factorStr, ',');
+        if (columns.size() < 6) continue;
 
-        if (loc == "Location" || yearStr == "Year" || factorStr == "TrafficMultiplier")
+        string loc = columns[0];
+        string yearStr = columns[1];
+        string monthStr = columns[2];
+        string dayStr = columns[3];
+        string hourStr = columns[4];
+        string factorStr = columns.back();
+
+        if (loc == "Location" || yearStr == "Year" || factorStr == "TrafficMultiplier" || factorStr == "WeatherMultiplier")
             continue;
 
-        trafficData.push_back(TrafficData(loc, stoi(yearStr), stoi(monthStr), stoi(dayStr), stoi(hourStr), stod(factorStr)));
+        try {
+            trafficData.push_back(TrafficData(loc, stoi(yearStr), stoi(monthStr), stoi(dayStr), stoi(hourStr), stod(factorStr)));
+        } catch (...) {
+            continue;
+        }
     }
 }
 
@@ -616,18 +963,31 @@ void loadWeather()
         if (line.empty()) continue;
         stringstream ss(line);
         string loc, yearStr, monthStr, dayStr, hourStr, factorStr;
+        vector<string> columns;
+        string col;
+        while (getline(ss, col, ',')) {
+            columns.push_back(col);
+        }
 
-        getline(ss, loc, ',');
-        getline(ss, yearStr, ',');
-        getline(ss, monthStr, ',');
-        getline(ss, dayStr, ',');
-        getline(ss, hourStr, ',');
-        getline(ss, factorStr, ',');
+        if (columns.size() < 6) continue;
+        
+        loc = columns[0];
+        yearStr = columns[1];
+        monthStr = columns[2];
+        dayStr = columns[3];
+        hourStr = columns[4];
+        // If 10 columns (live_updater full mode), the multiplier is the last one (index 9)
+        // If 6 columns (sync mode or generator), the multiplier is the last one (index 5)
+        factorStr = columns.back();
 
-        if (loc == "Location" || yearStr == "Year" || factorStr == "WeatherMultiplier")
+        if (loc == "Location" || yearStr == "Year" || factorStr == "WeatherMultiplier" || factorStr == "TrafficMultiplier")
             continue;
 
-        weatherData.push_back(WeatherData(loc, stoi(yearStr), stoi(monthStr), stoi(dayStr), stoi(hourStr), stod(factorStr)));
+        try {
+            weatherData.push_back(WeatherData(loc, stoi(yearStr), stoi(monthStr), stoi(dayStr), stoi(hourStr), stod(factorStr)));
+        } catch (...) {
+            continue;
+        }
     }
 }
 
@@ -670,28 +1030,27 @@ void loadWeather()
         return true;
     }
 
-
-double getTrafficFactor(string locName)
-{
-    time_t currentTime = time(nullptr);
-    tm *lt = localtime(&currentTime);
-    
-    int y = lt->tm_year + 1900;
-    int m = lt->tm_mon + 1;
-    int d = lt->tm_mday;
-    int h = lt->tm_hour;
-
-    for (const auto &traffic : trafficData)
+    double getTrafficFactor(string locName)
     {
-        if (traffic.location == locName && traffic.year == y && 
-            traffic.month == m && traffic.day == d && traffic.hour == h)
-        {
-            return traffic.factor;
-        }
-    }
+        time_t currentTime = time(nullptr);
+        tm *lt = localtime(&currentTime);
+        
+        int y = lt->tm_year + 1900;
+        int m = lt->tm_mon + 1;
+        int d = lt->tm_mday;
+        int h = lt->tm_hour;
 
-    return 1.0;
-}
+        for (const auto &traffic : trafficData)
+        {
+            if (normalizeKey(traffic.location) == normalizeKey(locName) && traffic.year == y && 
+                traffic.month == m && traffic.day == d && traffic.hour == h)
+            {
+                return traffic.factor;
+            }
+        }
+
+        return 1.0;
+    }
     
     double getWeatherFactor(string locName)
     {
@@ -705,7 +1064,7 @@ double getTrafficFactor(string locName)
 
         for (const auto &wd : weatherData)
         {
-            if (wd.location == locName && wd.year == y && 
+            if (normalizeKey(wd.location) == normalizeKey(locName) && wd.year == y && 
                 wd.month == m && wd.day == d && wd.hour == h)
             {
                 return wd.factor;
@@ -714,69 +1073,182 @@ double getTrafficFactor(string locName)
         return 1.0;
     }
 
+    unique_ptr<IFareCalculator> makeCoreFareCalculator()
+    {
+        return make_unique<DynamicFareCalculator>(
+            &pricing,
+            [this](const string &s) { return getTrafficFactor(s); },
+            [this](const string &s) { return getWeatherFactor(s); },
+            [this](const string &v) { return getVehicleBase(v); },
+            [this](const string &v) { return getVehiclePerKm(v); });
+    }
+
+    TripQuote computeTripQuote(double distance, const string &vehicleType, int availableDrivers,
+                               int activeUsers, const string &locName, const string &promoEntry)
+    {
+        string trimmed = promoEntry;
+        while (!trimmed.empty() && isspace(static_cast<unsigned char>(trimmed.front())))
+            trimmed.erase(trimmed.begin());
+        while (!trimmed.empty() && isspace(static_cast<unsigned char>(trimmed.back())))
+            trimmed.pop_back();
+
+        double promoFrac = 0;
+        string promoLabel;
+        if (trimmed == "SAVE10")
+        {
+            promoFrac = 0.10;
+            promoLabel = "SAVE10";
+        }
+        else if (trimmed == "UBER5")
+        {
+            promoFrac = 0.05;
+            promoLabel = "UBER5";
+        }
+
+        unique_ptr<IFareCalculator> engine = makeCoreFareCalculator();
+        if (promoFrac > 0.0)
+            engine = make_unique<PromoFareDecorator>(move(engine), promoFrac, promoLabel);
+        return engine->compute(distance, vehicleType, availableDrivers, activeUsers, locName);
+    }
+
+    void printFareEstimateBreakdown(const TripQuote &q)
+    {
+        cout << "\n========= FARE ESTIMATE BREAKDOWN =========\n";
+        cout << fixed << setprecision(2);
+        cout << "Base fare             : " << q.baseCharge << " taka\n";
+        cout << "Distance (" << q.distance << " km @ " << q.perKmRate << "/km) : " << (q.distance * q.perKmRate)
+             << " taka\n";
+        cout << "Subtotal              : " << q.baseFare << " taka\n\n";
+        cout << "Surges:\n";
+        cout << "  Traffic (" << q.trafficFactor << "x, weight " << pricing.trafficWeight << ") : +"
+             << (q.trafficSurge * 100.0) << "%\n";
+        cout << "  Weather (" << q.weatherFactor << "x, weight " << pricing.weatherWeight << ") : +"
+             << (q.weatherSurge * 100.0) << "%\n";
+        cout << "  Demand (supply ratio " << setprecision(3) << q.supplyRatio << ") : +" << setprecision(2)
+             << (q.demandSurge * 100.0) << "%\n";
+        cout << "  Total surge           : +" << (q.totalSurge * 100.0) << "%\n\n";
+        if (q.promoSavings > 0.0)
+            cout << "Promo (" << q.promoCode << ") savings : -" << q.promoSavings << " taka\n";
+        cout << "TOTAL ESTIMATED FARE  : " << q.finalFare << " taka\n";
+        cout << "==========================================\n";
+    }
+
     double calculateDynamicFare(double distance, const string &vehicleType,
                                 int availableDrivers, int activeUsers, string locName)
     {
-        double baseCharge = getVehicleBase(vehicleType);
-        double perKmRate = getVehiclePerKm(vehicleType);
+        return computeTripQuote(distance, vehicleType, availableDrivers, activeUsers, locName, "").finalFare;
+    }
 
-        double baseFare = baseCharge + (distance * perKmRate);
-        double trafficSurge = (getTrafficFactor(locName) - 1.0) * pricing.trafficWeight;
-        double weatherSurge = (getWeatherFactor(locName) - 1.0) * pricing.weatherWeight;
+    void showFareEstimate(double distance, const string &vehicleType,
+                          int availableDrivers, int activeUsers, string locName)
+    {
+        TripQuote q = computeTripQuote(distance, vehicleType, availableDrivers, activeUsers, locName, "");
+        printFareEstimateBreakdown(q);
+    }
 
-        double demandSurge = 0.0;
-        if (activeUsers > 0)
+    void loadUsers()
+    {
+        ifstream fin("users.csv");
+        if (!fin)
         {
-            double ratio = (double)availableDrivers / (double)activeUsers;
-            if (ratio < pricing.demandTier1Ratio)
+            // Try legacy users.txt if csv doesn't exist
+            ifstream legacy("users.txt");
+            if (!legacy) return;
+            
+            string line;
+            while (getline(legacy, line))
             {
-                demandSurge = pricing.demandTier1Surge;
+                if (line.empty()) continue;
+                stringstream ss(line);
+                string u, p;
+                double walletAmount = 1000.0;
+                ss >> u >> p >> walletAmount;
+                User newUser(u, p, Money(walletAmount));
+                
+                string favs;
+                if (getline(ss, favs)) {
+                    stringstream fss(favs);
+                    string f;
+                    while (getline(fss, f, ':')) {
+                        size_t start = f.find_first_not_of(" ");
+                        if (start != string::npos) {
+                            f = f.substr(start);
+                            newUser.addFavorite(f);
+                        }
+                    }
+                }
+                users.push_back(newUser);
             }
-            else if (ratio < pricing.demandTier2Ratio)
-            {
-                demandSurge = pricing.demandTier2Surge;
-            }
-            else if (ratio < pricing.demandTier3Ratio)
-            {
-                demandSurge = pricing.demandTier3Surge;
-            }
+            legacy.close();
+            saveUsers(); // Migrate to CSV immediately
+            return;
         }
 
-        double totalSurge = trafficSurge + weatherSurge + demandSurge;
-        if (totalSurge > pricing.maxTotalSurge)
-            totalSurge = pricing.maxTotalSurge;
-        if (totalSurge < 0.0)
-            totalSurge = 0.0;
+        string line;
+        while (getline(fin, line))
+        {
+            if (line.empty()) continue;
 
-        double finalFare = baseFare * (1.0 + totalSurge);
-        return round(finalFare / 5.0) * 5.0;
+            stringstream ss(line);
+            string u, p, walletStr, favStr;
+            
+            getline(ss, u, ',');
+            getline(ss, p, ',');
+            getline(ss, walletStr, ',');
+            getline(ss, favStr, ',');
+
+            double walletAmount = 1000.0;
+            try {
+                if (!walletStr.empty()) walletAmount = stod(walletStr);
+            } catch (...) {}
+
+            string cardStr;
+            getline(ss, cardStr, ',');
+            double cardAmount = 1500.0;
+            try {
+                if (!cardStr.empty())
+                    cardAmount = stod(cardStr);
+            } catch (...) {}
+
+            User newUser(u, p, Money(walletAmount), Money(cardAmount));
+            if (!favStr.empty())
+            {
+                stringstream favSS(favStr);
+                string fav;
+                while (getline(favSS, fav, ':'))
+                {
+                    if (!fav.empty()) newUser.addFavorite(fav);
+                }
+            }
+            users.push_back(newUser);
+        }
+    }
+
+    void saveUsers()
+    {
+        ofstream fout("users.csv");
+        for (const auto &u : users)
+        {
+            fout << u.getUsername() << "," << u.getPassword() << "," << fixed << setprecision(2) << u.getWallet().get() << ",";
+            
+            vector<string> favs = u.getFavoriteLocations();
+            for (size_t i = 0; i < favs.size(); ++i)
+            {
+                fout << favs[i];
+                if (i < favs.size() - 1)
+                    fout << ":";
+            }
+            fout << "," << fixed << setprecision(2) << u.getCardBalance().get() << "\n";
+        }
     }
 
     void loadLocations()
     {
         ifstream fin("location.csv");
-        if (!fin)
+        if (!fin) {
+            perror("Error opening location.csv");
             throw runtime_error("location.csv not found");
-
-        string line;
-
-        while (getline(fin, line))
-        {
-            stringstream ss(line);
-            string n, la, lo;
-            getline(ss, n, ',');
-            getline(ss, la, ',');
-            getline(ss, lo, ',');
-
-            locations.push_back(Location(n, stod(la), stod(lo)));
         }
-    }
-
-    void loadUsers()
-    {
-        ifstream fin("users.txt");
-        if (!fin)
-            throw runtime_error("users.txt not found");
 
         string line;
         while (getline(fin, line))
@@ -785,32 +1257,26 @@ double getTrafficFactor(string locName)
                 continue;
 
             stringstream ss(line);
-            string u, p;
-            double walletAmount = 1000.0;
+            string n, la, lo;
+            getline(ss, n, ',');
+            getline(ss, la, ',');
+            getline(ss, lo, ',');
 
-            ss >> u >> p;
-            if (ss >> walletAmount)
+            try
             {
-                users.push_back(User(u, p, Money(walletAmount)));
+                locations.push_back(Location(n, stod(la), stod(lo)));
             }
-            else
+            catch (...)
             {
-                users.push_back(User(u, p));
+                continue;
             }
         }
-    }
-
-    void saveUsers()
-    {
-        ofstream fout("users.txt");
-        for (const auto &u : users)
-        {
-            fout << u.getUsername() << " " << u.getPassword() << " " << fixed << setprecision(2) << u.getWallet() << "\n";
-        }
+        sortLocationsByName();
     }
 
     void saveLocations()
     {
+        sortLocationsByName();
         ofstream fout("location.csv");
         for (const auto &l : locations)
         {
@@ -827,6 +1293,7 @@ double getTrafficFactor(string locName)
         string line;
         while (getline(fin, line))
         {
+            if (line.empty()) continue;
             stringstream ss(line);
             string id, pass, v, loc, availableStr, earnStr, tripStr, avgRatingStr, ratingCountStr;
             getline(ss, id, ',');
@@ -840,12 +1307,17 @@ double getTrafficFactor(string locName)
             getline(ss, ratingCountStr, ',');
 
             bool availFlag = (availableStr != "0");
-            double totalEarnVal = stod(earnStr);
-            int tripCnt = stoi(tripStr);
+            double totalEarnVal = 0.0;
+            int tripCnt = 0;
             double avgRatingVal = 0.0;
             int ratingCntVal = 0;
-            if (!avgRatingStr.empty()) avgRatingVal = stod(avgRatingStr);
-            if (!ratingCountStr.empty()) ratingCntVal = stoi(ratingCountStr);
+            
+            try {
+                if (!earnStr.empty()) totalEarnVal = stod(earnStr);
+                if (!tripStr.empty()) tripCnt = stoi(tripStr);
+                if (!avgRatingStr.empty()) avgRatingVal = stod(avgRatingStr);
+                if (!ratingCountStr.empty()) ratingCntVal = stoi(ratingCountStr);
+            } catch (...) {}
 
             drivers.push_back(Driver(id, pass, v, loc, availFlag, totalEarnVal, tripCnt, avgRatingVal, ratingCntVal));
         }
@@ -864,7 +1336,7 @@ double getTrafficFactor(string locName)
                 continue;
 
             stringstream ss(line);
-            Ride r;//ekta ride struct e sob data neya hobe
+            Ride r;
             getline(ss, r.timeStamp, ',');
             getline(ss, r.user, ',');
             getline(ss, r.driver, ',');
@@ -876,8 +1348,42 @@ double getTrafficFactor(string locName)
             getline(ss, r.vehicle, ',');
             getline(ss, r.payment, ',');
 
-            r.distance = stod(d1);
-            r.fare = stod(d2);
+            try {
+                if (!d1.empty()) r.distance = stod(d1);
+                if (!d2.empty()) r.fare = stod(d2);
+            } catch (...) {
+                continue;
+            }
+
+            string opt;
+            if (getline(ss, opt, ','))
+                r.status = opt;
+            if (getline(ss, opt, ','))
+            {
+                try
+                {
+                    if (!opt.empty())
+                        r.estimateFare = stod(opt);
+                } catch (...) {}
+            }
+            if (getline(ss, opt, ','))
+            {
+                try
+                {
+                    if (!opt.empty())
+                        r.surgeFraction = stod(opt);
+                } catch (...) {}
+            }
+            if (getline(ss, opt, ','))
+            {
+                try
+                {
+                    if (!opt.empty())
+                        r.promoDiscount = stod(opt);
+                } catch (...) {}
+            }
+            if (getline(ss, opt, ','))
+                r.promoCode = opt;
 
             rides.push_back(r);
         }
@@ -918,7 +1424,9 @@ double getTrafficFactor(string locName)
         ofstream fout("rides.csv", ios::app);
         fout << r.timeStamp << "," << r.user << "," << r.driver << "," << r.from << "," << r.to
              << "," << fixed << setprecision(5) << r.distance << "," << r.fare << "," << r.vehicle
-             << "," << r.payment << "\n";
+             << "," << r.payment << "," << r.status << "," << fixed << setprecision(2) << r.estimateFare << ","
+             << fixed << setprecision(4) << r.surgeFraction << "," << fixed << setprecision(2) << r.promoDiscount
+             << "," << r.promoCode << "\n";
     }
 
     void showLocations()
@@ -935,19 +1443,20 @@ double getTrafficFactor(string locName)
         system("cls");
         if (role == "User")
         {
-            cout << "\n----- RIDE HISTORY -----\n";
+            cout << "\n----- YOUR TRIPS (history) -----\n";
             bool found = false;
             for (const auto &r : rides)
             {
                 if (r.user == name)
                 {
                     found = true;
-                    cout << r.timeStamp << " | " << r.from << " -> " << r.to << " | " << r.vehicle
-                         << " | " << r.fare << "\n";
+                    cout << r.timeStamp << " | " << r.status << " | " << r.from << " -> " << r.to << " | "
+                         << r.vehicle << " | " << r.payment << " | est " << r.estimateFare << " | paid "
+                         << r.fare << "\n";
                 }
             }
             if (!found)
-                cout << "No rides yet.\n";
+                cout << "No trips yet.\n";
         }
         else if (role == "Driver")
         {
@@ -1007,6 +1516,7 @@ double getTrafficFactor(string locName)
         if (sel >= 1 && sel <= (int)drivers.size())
         {
             string dname = drivers[static_cast<size_t>(sel - 1)].getUsername();
+            cout << "Current values for driver: " << dname << "\n";
             cout << "\nDriver: " << dname << "\n";
             cout << "Vehicle : " << drivers[static_cast<size_t>(sel - 1)].getVehicleType() << "\n";
             cout << "Location: " << drivers[static_cast<size_t>(sel - 1)].getLocation() << "\n";
@@ -1027,10 +1537,53 @@ double getTrafficFactor(string locName)
 
     void requestRide(User &u)
     {
-        showLocations();
+        int fromI = 0;
+        int toI = 0;
+        
+        cout << "\n--- SELECT PICKUP LOCATION ---\n";
+        
+        vector<string> favs = u.getFavoriteLocations();
+        if (!favs.empty())
+        {
+            cout << "Your Favorite Locations:\n";
+            for (size_t i = 0; i < favs.size(); ++i)
+            {
+                cout << "  (" << (i + 1) << ") " << favs[i] << "\n";
+            }
+            int fav = InputValidator<int>::getInput("Select favorite (or 0 to browse all): ");
+            if (fav >= 1 && fav <= (int)favs.size())
+            {
+                string fromI_str = favs[static_cast<size_t>(fav - 1)];
+                int idx = findLocationIndexCaseInsensitive(fromI_str);
+                if (idx >= 0)
+                {
+                    fromI = idx + 1;
+                }
+                else
+                {
+                    cout << "Favorite location not found. Browsing all locations.\n";
+                    showLocations();
+                    fromI = InputValidator<int>::getInput("Pick FROM location number: ");
+                }
+            }
+            else if (fav != 0)
+            {
+                cout << "Invalid choice.\n";
+                return;
+            }
+            else
+            {
+                showLocations();
+                fromI = InputValidator<int>::getInput("Pick FROM location number: ");
+            }
+        }
+        else
+        {
+            showLocations();
+            fromI = InputValidator<int>::getInput("Pick FROM location number: ");
+        }
 
-        int fromI = InputValidator<int>::getInput("Pick FROM location number: ");
-        int toI = InputValidator<int>::getInput("Pick TO location number  : ");
+        toI = InputValidator<int>::getInput("Pick TO location number  : ");
 
         if (fromI < 1 || fromI > (int)locations.size() || toI < 1 || toI > (int)locations.size() ||
             fromI == toI)
@@ -1040,10 +1593,10 @@ double getTrafficFactor(string locName)
         }
 
         cout << "\nVehicle Types:\n";
-        cout << "1. Bike\n2. CNG\n3. UberX\n4. Premium\n";
+        cout << "1. Bike\n2. CNG\n3. UberX\n4. Premium\n5. Intercity\n";
         int v = InputValidator<int>::getInput("Choose vehicle: ");
 
-        if (v < 1 || v > 4)
+        if (v < 1 || v > 5)
         {
             cout << "Invalid vehicle choice.\n";
             return;
@@ -1058,6 +1611,8 @@ double getTrafficFactor(string locName)
             selectedVehicle = "UberX";
         else if (v == 4)
             selectedVehicle = "Premium";
+        else if (v == 5)
+            selectedVehicle = "Intercity";
 
         if (selectedVehicle.empty())
         {
@@ -1068,20 +1623,8 @@ double getTrafficFactor(string locName)
         Location from = locations[static_cast<size_t>(fromI - 1)];
         Location to = locations[static_cast<size_t>(toI - 1)];
 
-        if (refreshLiveDataForRequest(from))
-        {
-            double liveTraffic = getTrafficFactor(from.name);
-            double liveWeather = getWeatherFactor(from.name);
-            cout << "\nLive conditions for pickup location: " << from.name << "\n";
-            cout << "Traffic factor : " << fixed << setprecision(1) << liveTraffic
-                 << " (" << describeTrafficFactor(liveTraffic) << ")\n";
-            cout << "Weather factor : " << fixed << setprecision(1) << liveWeather
-                 << " (" << describeWeatherFactor(liveWeather) << ")\n";
-        }
-        else
-        {
-            cout << "\nWarning: Live API refresh failed. Using existing cached traffic/weather data.\n";
-        }
+        // Note: API refresh is now done at program startup to save time here.
+        // We use the cached traffic/weather data loaded at startup.
 
         int dIdx = findNearestDriver(from, selectedVehicle);
         if (dIdx < 0)
@@ -1102,6 +1645,8 @@ double getTrafficFactor(string locName)
             vehicle = new UberX();
         else if (v == 4)
             vehicle = new Premium();
+        else if (v == 5)
+            vehicle = new Intercity();
 
         if (!vehicle)
         {
@@ -1121,43 +1666,129 @@ double getTrafficFactor(string locName)
         int activeUsers = (int)users.size();
         double speed = vehicle->speed();
         int availableDrivers = countAvailableDrivers(selectedVehicle);
-        double fare = calculateDynamicFare(tripDistance, selectedVehicle, availableDrivers, activeUsers, from.name);
-        int eta = (int)round(((pickupDistance + tripDistance) / speed) * 60.0);
 
-        // static variable demo
-        static int serial = 0;
-        serial++;
+        cout << "\n[Phase: " << rideStatusLabel(RideStatus::Matched) << "] Driver matched.\n";
 
-        cout << "\nDriver assigned: " << driver.getUsername() << "\n";
-        cout << "Vehicle       : " << selectedVehicle << "\n";
-        cout << "Distance(km)  : " << fixed << setprecision(2) << tripDistance << "\n";
-        cout << "ETA(min)      : " << eta << "\n";
-        cout << "Fare(taka)    : " << fare << "\n";
-        cout << "Ride Serial   : " << serial << "\n";
+        cout << "Promo codes (optional): SAVE10 / UBER5\n";
+        cout << "Promo (or leave blank): ";
+        string promoRaw;
+        getline(cin >> ws, promoRaw);
 
-        if (!u.pay(fare))
+        TripQuote quote =
+            computeTripQuote(tripDistance, selectedVehicle, availableDrivers, activeUsers, from.name, promoRaw);
+        printFareEstimateBreakdown(quote);
+        double fareAmount = quote.finalFare;
+
+        cout << "\nPayment method:\n";
+        cout << "1. Wallet\n";
+        cout << "2. Cash\n";
+        cout << "3. Card (simulated balance)\n";
+        int payChoice = InputValidator<int>::getInput("Choose payment: ");
+
+        WalletPaymentMethod walletPay;
+        CashPaymentMethod cashPay;
+        CardPaymentMethod cardPay;
+        IPaymentMethod *paymentMethod = nullptr;
+        if (payChoice == 1)
+            paymentMethod = &walletPay;
+        else if (payChoice == 2)
+            paymentMethod = &cashPay;
+        else if (payChoice == 3)
+            paymentMethod = &cardPay;
+        else
         {
-            cout << "Wallet balance not enough.\n";
+            cout << "Invalid payment selection.\n";
             driver.setAvailable(true);
             delete vehicle;
             return;
         }
 
-        saveUsers();
-        cout << "Payment done from wallet. Remaining: " << u.getWallet() << "\n";
+        if (payChoice == 1 && u.getWallet().get() < fareAmount)
+        {
+            cout << "\nInsufficient wallet balance.\n";
+            driver.setAvailable(true);
+            delete vehicle;
+            return;
+        }
+        if (payChoice == 3 && u.getCardBalance().get() < fareAmount)
+        {
+            cout << "\nInsufficient card balance.\n";
+            driver.setAvailable(true);
+            delete vehicle;
+            return;
+        }
 
-    int driverWaitTime = (int)max(1.0, round((pickupDistance / speed) * 60.0));
-    int journeyTime = (int)max(1.0, round((tripDistance / speed) * 60.0));
-        cout << "\nAll set! Press any key to start the ride tracking...";
+        int confirm = InputValidator<int>::getInput("Confirm trip booking? (1=Yes, 0=No): ");
+        if (confirm != 1)
+        {
+            cout << "Trip cancelled.\n";
+            driver.setAvailable(true);
+            delete vehicle;
+            return;
+        }
+
+        int beginChoice =
+            InputValidator<int>::getInput("1. Start trip   2. Cancel trip (fee applies to wallet)\nChoice: ");
+        if (beginChoice == 2)
+        {
+            double cfee = cancelPolicy.cancellationFee(true);
+            WalletPaymentMethod feeMethod;
+            cout << fixed << setprecision(2) << "Cancellation fee: " << cfee << " taka (wallet).\n";
+            if (!feeMethod.charge(u, cfee))
+                cout << "Insufficient wallet for cancellation fee.\n";
+            else
+                saveUsers();
+            driver.setAvailable(true);
+            delete vehicle;
+            cout << "Trip cancelled.\n";
+            return;
+        }
+        if (beginChoice != 1)
+        {
+            cout << "Invalid choice. Restoring driver availability.\n";
+            driver.setAvailable(true);
+            delete vehicle;
+            return;
+        }
+
+        static int serial = 0;
+        serial++;
+
+        int eta = (int)round(((pickupDistance + tripDistance) / speed) * 60.0);
+
+        cout << "\n=== TRIP CONFIRMED ===\n";
+        cout << "[Phase: " << rideStatusLabel(RideStatus::Matched) << "]\n";
+        cout << "Driver : " << driver.getUsername() << " (" << fixed << setprecision(2) << pickupDistance
+             << " km away)\n";
+        cout << "Vehicle: " << selectedVehicle << "\n";
+        cout << "Trip   : " << fixed << setprecision(2) << tripDistance << " km\n";
+        cout << "ETA    : " << eta << " mins\n";
+        cout << "Fare   : " << fareAmount << " taka via " << paymentMethod->label() << "\n";
+        cout << "Trip # : " << serial << "\n";
+
+        int driverWaitTime = (int)max(1.0, round((pickupDistance / speed) * 60.0));
+        int journeyTime = (int)max(1.0, round((tripDistance / speed) * 60.0));
+        cout << "\nPress any key to start live tracking...";
         _getch();
         system("cls");
         simulateRideProgress(driverWaitTime, journeyTime);
-        driver.addTrip(company.getDriverPart(fare));
+
+        if (!paymentMethod->charge(u, fareAmount))
+        {
+            cout << "Payment failed after trip completion.\n";
+            driver.setAvailable(true);
+            delete vehicle;
+            return;
+        }
+        saveUsers();
+
+        cout << "Payment captured: " << fareAmount << " taka (" << paymentMethod->label() << ").\n";
+
+        driver.addTrip(company.getDriverPart(fareAmount));
         driver.setLocation(to.name);
         driver.setAvailable(true);
 
-        company.addRideRevenue(fare);
-
+        company.addRideRevenue(fareAmount);
         delete vehicle;
 
         Ride r;
@@ -1167,24 +1798,37 @@ double getTrafficFactor(string locName)
         r.from = from.name;
         r.to = to.name;
         r.distance = tripDistance;
-        r.fare = fare;
+        r.fare = fareAmount;
         r.vehicle = selectedVehicle;
-        r.payment = "Wallet";
+        r.payment = paymentMethod->label();
+        r.status = rideStatusLabel(RideStatus::Completed);
+        r.estimateFare = quote.finalFare + quote.promoSavings;
+        r.surgeFraction = quote.totalSurge;
+        r.promoDiscount = quote.promoSavings;
+        r.promoCode = quote.promoCode;
 
         rides.push_back(r);
         appendRide(r);
-        
-        cout << "\n--- RATE YOUR RIDE ---\n";
-        int rVal = InputValidator<int>::getInput("Please rate the driver (1-5): ");
-        if (rVal < 1) rVal = 1;
-        if (rVal > 5) rVal = 5;
+
+        ReceiptFormatter::printTripReceipt(quote, r, company, paymentMethod->label());
+
+        cout << "\n--- RATE YOUR TRIP (required) ---\n";
+        int rVal = 0;
+        while (rVal < 1 || rVal > 5)
+        {
+            rVal = InputValidator<int>::getInput("Rate your driver (1-5): ");
+            if (rVal < 1 || rVal > 5)
+                cout << "Enter a whole number from 1 to 5.\n";
+        }
         driver.addRating(rVal);
-        cout << "Thank you for your rating!\n";
+        cout << "Thanks for your feedback.\n";
 
-        // persist updated driver stats centrally
+        int viewMap = InputValidator<int>::getInput("View ride route on map? (1=Yes, 0=No): ");
+        if (viewMap == 1)
+            viewRideMap(from.name, to.name);
+
         saveDrivers();
-
-        cout << "\nRide completed successfully. Press any key to return to menu...";
+        cout << "\nTrip finished. Press any key to return to menu...";
         _getch();
     }
 
@@ -1193,10 +1837,12 @@ double getTrafficFactor(string locName)
         while (true)
         {
             cout << "\n--- USER MENU (" << u.getUsername() << ") ---\n";
-            cout << "1. Request Ride\n";
-            cout << "2. Wallet\n";
-            cout << "3. Ride History\n";
-            cout << "4. Back\n";
+            cout << "1. Request a Ride\n";
+            cout << "2. Top up Wallet / Card\n";
+            cout << "3. Your trips (history)\n";
+            cout << "4. Add/View Favorite Locations\n";
+            cout << "5. View Map\n";
+            cout << "6. Back to Main Menu\n";
 
             int ch = InputValidator<int>::getInput("Choice: ");
 
@@ -1207,12 +1853,19 @@ double getTrafficFactor(string locName)
             else if (ch == 2)
             {
                 system("cls");
-                cout << "--- WALLET ---\n";
-                cout << "Current Balance: " << u.getWallet() << " taka\n";
-                int add = InputValidator<int>::getInput("Add money (0 to skip): ");
+                cout << "--- WALLET / CARD ---\n";
+                cout << "Wallet balance: " << u.getWallet() << " taka\n";
+                cout << "Card balance  : " << u.getCardBalance() << " taka\n";
+                int add = InputValidator<int>::getInput("Add money to wallet (0 to skip): ");
                 if (add > 0)
                 {
                     u.addMoney(add);
+                    saveUsers();
+                }
+                int addCard = InputValidator<int>::getInput("Add money to card (0 to skip): ");
+                if (addCard > 0)
+                {
+                    u.addCardMoney(addCard);
                     saveUsers();
                 }
             }
@@ -1221,6 +1874,14 @@ double getTrafficFactor(string locName)
                 showRideHistory(u.getUsername(), "User");
             }
             else if (ch == 4)
+            {
+                manageFavoriteLocations(u);
+            }
+            else if (ch == 5)
+            {
+                viewSystemMap();
+            }
+            else if (ch == 6)
             {
                 system("cls");
                 break;
@@ -1232,15 +1893,104 @@ double getTrafficFactor(string locName)
         }
     }
 
+    void manageFavoriteLocations(User &u)
+    {
+        while (true)
+        {
+            system("cls");
+            cout << "\n--- MANAGE FAVORITE LOCATIONS ---\n";
+            vector<string> favs = u.getFavoriteLocations();
+            
+            if (favs.empty())
+            {
+                cout << "No favorite locations saved yet. (Max 5)\n\n";
+            }
+            else
+            {
+                cout << "Your Favorites:\n";
+                for (size_t i = 0; i < favs.size(); ++i)
+                {
+                    cout << "  " << (i + 1) << ". " << favs[i] << "\n";
+                }
+                cout << "\n";
+            }
+
+            cout << "1. Add Favorite\n";
+            if (!favs.empty())
+                cout << "2. Remove Favorite\n";
+            cout << "3. Back\n";
+
+            int ch = InputValidator<int>::getInput("Choice: ");
+
+            if (ch == 1)
+            {
+                if (favs.size() >= 5)
+                {
+                    cout << "Maximum 5 favorites allowed. Remove one first.\n";
+                    cout << "Press any key to continue...";
+                    _getch();
+                    continue;
+                }
+
+                showLocations();
+                int idx = InputValidator<int>::getInput("Select location number to add as favorite: ");
+                if (idx >= 1 && idx <= (int)locations.size())
+                {
+                    string locName = locations[static_cast<size_t>(idx - 1)].name;
+                    u.addFavorite(locName);
+                    saveUsers();
+                    cout << "Added '" << locName << "' as favorite.\n";
+                    cout << "Press any key to continue...";
+                    _getch();
+                }
+                else
+                {
+                    cout << "Invalid location.\n";
+                    cout << "Press any key to continue...";
+                    _getch();
+                }
+            }
+            else if (ch == 2 && !favs.empty())
+            {
+                int idx = InputValidator<int>::getInput("Select favorite number to remove: ");
+                if (idx >= 1 && idx <= (int)favs.size())
+                {
+                    string toRemove = favs[static_cast<size_t>(idx - 1)];
+                    u.removeFavorite(toRemove);
+                    saveUsers();
+                    cout << "Removed '" << toRemove << "' from favorites.\n";
+                    cout << "Press any key to continue...";
+                    _getch();
+                }
+                else
+                {
+                    cout << "Invalid selection.\n";
+                    cout << "Press any key to continue...";
+                    _getch();
+                }
+            }
+            else if (ch == 3)
+            {
+                break;
+            }
+            else
+            {
+                cout << "Invalid choice.\n";
+            }
+        }
+    }
+
+
     void driverMenu(Driver &d)
     {
         while (true)
         {
             cout << "\n--- DRIVER MENU (" << d.getUsername() << ") ---\n";
-            cout << "1. Ride History\n";
+            cout << "1. View Ride History\n";
             cout << "2. Toggle Availability (Current: " << (d.isAvailable() ? "Available" : "Busy") << ")\n";
-            cout << "3. Stats\n";
-            cout << "4. Back\n";
+            cout << "3. View Driver Stats\n";
+            cout << "4. View Map\n";
+            cout << "5. Back to Main Menu\n";
 
             int ch = InputValidator<int>::getInput("Choice: ");
             if (ch == 1)
@@ -1269,6 +2019,10 @@ double getTrafficFactor(string locName)
             }
             else if (ch == 4)
             {
+                viewSystemMap();
+            }
+            else if (ch == 5)
+            {
                 system("cls");
                 break;
             }
@@ -1277,6 +2031,41 @@ double getTrafficFactor(string locName)
                 cout << "Invalid choice.\n";
             }
         }
+    }
+
+public:
+    void viewSystemMap()
+    {
+        system("cls");
+        cout << "Generating system map...\n";
+        system("python map_generator.py system");
+        cout << "System map opened in browser.\n";
+        cout << "Press any key to continue...";
+        _getch();
+    }
+
+    void viewRideMap(string fromLoc, string toLoc)
+    {
+        system("cls");
+        cout << "Generating ride map with real road routing...\n";
+        string cmd = "python map_generator.py ride \"" + fromLoc + "\" \"" + toLoc + "\"";
+        int result = system(cmd.c_str());
+        if (result == 0)
+            cout << "Ride map opened in browser.\n";
+        else
+            cout << "Could not generate map.\n";
+        cout << "Press any key to continue...";
+        _getch();
+    }
+
+    void viewHeatmap()
+    {
+        system("cls");
+        cout << "Generating Demand Heatmap...\n";
+        system("python map_generator.py heatmap");
+        cout << "Heatmap opened in browser.\n";
+        cout << "Press any key to continue...";
+        _getch();
     }
 
     void adminShowSummary()
@@ -1359,17 +2148,52 @@ double getTrafficFactor(string locName)
                     continue;
                 }
 
-                double la = 0.0;
-                double lo = 0.0;
-                if (!geocodeLocationName(n, la, lo))
+                vector<GeocodeCandidate> candidates;
+                if (!geocodeLocationCandidates(n, candidates))
                 {
                     cout << "Geocoding failed. Ensure internet is available and location name is valid.\n";
                     continue;
                 }
 
+                double refLat = candidates[0].lat;
+                double refLon = candidates[0].lon;
+                stable_sort(candidates.begin(), candidates.end(), [&](const GeocodeCandidate &a, const GeocodeCandidate &b) {
+                    double da = approxDistanceKm(refLat, refLon, a.lat, a.lon);
+                    double db = approxDistanceKm(refLat, refLon, b.lat, b.lon);
+                    if (da != db)
+                        return da < db;
+                    return normalizeKey(a.display) < normalizeKey(b.display);
+                });
+
+                cout << "Top 10 geocoding matches (closest to farthest):\n";
+                for (size_t i = 0; i < candidates.size(); ++i)
+                {
+                    double dkm = approxDistanceKm(refLat, refLon, candidates[i].lat, candidates[i].lon);
+                    cout << "  " << i + 1 << ". " << candidates[i].display << " ("
+                         << fixed << setprecision(6) << candidates[i].lat << ", " << candidates[i].lon
+                         << ") ~" << setprecision(2) << dkm << " km\n";
+                }
+
+                int pick = InputValidator<int>::getInput("Select match serial (0 to cancel): ");
+                if (pick == 0)
+                {
+                    cout << "Cancelled.\n";
+                    continue;
+                }
+
+                if (pick < 1 || pick > static_cast<int>(candidates.size()))
+                {
+                    cout << "Invalid selection.\n";
+                    continue;
+                }
+
+                const GeocodeCandidate &chosen = candidates[static_cast<size_t>(pick - 1)];
+                string finalName = chosen.display;
+                double la = chosen.lat;
+                double lo = chosen.lon;
                 cout << "Matched coordinates: " << fixed << setprecision(6) << la << ", " << lo << "\n";
 
-                int dupIdx = findLocationIndexCaseInsensitive(n);
+                int dupIdx = findLocationIndexCaseInsensitive(finalName);
                 if (dupIdx >= 0)
                 {
                     cout << "A location named '" << locations[static_cast<size_t>(dupIdx)].name << "' already exists at "
@@ -1383,7 +2207,7 @@ double getTrafficFactor(string locName)
                     }
                 }
 
-                locations.push_back(Location(n, la, lo));
+                locations.push_back(Location(finalName, la, lo));
                 saveLocations();
                 cout << "Location added via geocoding and saved.\n";
             }
@@ -1412,7 +2236,7 @@ double getTrafficFactor(string locName)
                 const Location &target = locations[static_cast<size_t>(idx - 1)];
                 for (const auto &d : drivers)
                 {
-                    if (d.getLocation() == target.name)
+                    if (normalizeKey(d.getLocation()) == normalizeKey(target.name))
                     {
                         cout << "Cannot delete. Driver '" << d.getUsername() << "' is currently assigned to this location.\n";
                         cout << "Move/delete related drivers first, then retry.\n";
@@ -1456,7 +2280,8 @@ double getTrafficFactor(string locName)
             cout << "3. Update Traffic/Weather Weights\n";
             cout << "4. Update Demand Tiers\n";
             cout << "5. Update Max Surge Cap\n";
-            cout << "6. Back\n";
+            cout << "6. Toggle Dynamic Pricing\n";
+            cout << "7. Back\n";
 
             int ch = InputValidator<int>::getInput("Choice: ");
             if (ch == 1)
@@ -1466,6 +2291,7 @@ double getTrafficFactor(string locName)
                 cout << "CNG     : base=" << pricing.cngBase << ", perKm=" << pricing.cngPerKm << "\n";
                 cout << "UberX   : base=" << pricing.uberXBase << ", perKm=" << pricing.uberXPerKm << "\n";
                 cout << "Premium : base=" << pricing.premiumBase << ", perKm=" << pricing.premiumPerKm << "\n";
+                cout << "Intercity: base=" << pricing.intercityBase << ", perKm=" << pricing.intercityPerKm << "\n";
 
                 cout << "\nSurge Weights:\n";
                 cout << "trafficWeight=" << pricing.trafficWeight << ", weatherWeight=" << pricing.weatherWeight << "\n";
@@ -1481,10 +2307,21 @@ double getTrafficFactor(string locName)
             }
             else if (ch == 2)
             {
-                cout << "\nSelect Vehicle: 1.Bike 2.CNG 3.UberX 4.Premium\n";
+                cout << "\nSelect Vehicle: 1.Bike 2.CNG 3.UberX 4.Premium 5.Intercity\n";
                 int v = InputValidator<int>::getInput("Vehicle choice: ");
-                double base = InputValidator<double>::getInput("New base fare: ");
-                double perKm = InputValidator<double>::getInput("New per-km fare: ");
+
+                string keyBase, keyPerKm;
+                double curBase = 0.0, curPerKm = 0.0;
+                if (v == 1) { keyBase = "bike_base"; keyPerKm = "bike_per_km"; curBase = pricing.bikeBase; curPerKm = pricing.bikePerKm; }
+                else if (v == 2) { keyBase = "cng_base"; keyPerKm = "cng_per_km"; curBase = pricing.cngBase; curPerKm = pricing.cngPerKm; }
+                else if (v == 3) { keyBase = "uberx_base"; keyPerKm = "uberx_per_km"; curBase = pricing.uberXBase; curPerKm = pricing.uberXPerKm; }
+                else if (v == 4) { keyBase = "premium_base"; keyPerKm = "premium_per_km"; curBase = pricing.premiumBase; curPerKm = pricing.premiumPerKm; }
+                else if (v == 5) { keyBase = "intercity_base"; keyPerKm = "intercity_per_km"; curBase = pricing.intercityBase; curPerKm = pricing.intercityPerKm; }
+                else { cout << "Invalid vehicle choice.\n"; continue; }
+
+                cout << "Current values - (" << keyBase << ") = " << curBase << ", (" << keyPerKm << ") = " << curPerKm << "\n";
+                double base = InputValidator<double>::getInput((string("New base fare (key: ") + keyBase + "): "));
+                double perKm = InputValidator<double>::getInput((string("New per-km fare (key: ") + keyPerKm + "): "));
                 if (base < 0 || base > 5000 || perKm < 0 || perKm > 500)
                 {
                     cout << "Invalid: base must be 0-5000 and per-km must be 0-500.\n";
@@ -1495,15 +2332,16 @@ double getTrafficFactor(string locName)
                 else if (v == 2) { pricing.cngBase = base; pricing.cngPerKm = perKm; }
                 else if (v == 3) { pricing.uberXBase = base; pricing.uberXPerKm = perKm; }
                 else if (v == 4) { pricing.premiumBase = base; pricing.premiumPerKm = perKm; }
-                else { cout << "Invalid vehicle choice.\n"; continue; }
+                else if (v == 5) { pricing.intercityBase = base; pricing.intercityPerKm = perKm; }
 
                 savePricingConfig();
                 cout << "Vehicle pricing updated.\n";
             }
             else if (ch == 3)
             {
-                double tw = InputValidator<double>::getInput("Traffic weight: ");
-                double ww = InputValidator<double>::getInput("Weather weight: ");
+                cout << "Current values - (traffic_weight) = " << pricing.trafficWeight << ", (weather_weight) = " << pricing.weatherWeight << "\n";
+                double tw = InputValidator<double>::getInput("Traffic weight (key: traffic_weight): ");
+                double ww = InputValidator<double>::getInput("Weather weight (key: weather_weight): ");
                 if (tw < 0 || tw > 2.0 || ww < 0 || ww > 2.0)
                 {
                     cout << "Invalid: weights must be within 0.0 to 2.0.\n";
@@ -1516,13 +2354,18 @@ double getTrafficFactor(string locName)
             }
             else if (ch == 4)
             {
+                cout << "Current Demand Tiers:\n";
+                cout << "  (demand_tier1_ratio) = " << pricing.demandTier1Ratio << ", (demand_tier1_surge) = " << pricing.demandTier1Surge << "\n";
+                cout << "  (demand_tier2_ratio) = " << pricing.demandTier2Ratio << ", (demand_tier2_surge) = " << pricing.demandTier2Surge << "\n";
+                cout << "  (demand_tier3_ratio) = " << pricing.demandTier3Ratio << ", (demand_tier3_surge) = " << pricing.demandTier3Surge << "\n";
+
                 cout << "Enter tier ratio and surge values in increasing ratio order.\n";
-                double r1 = InputValidator<double>::getInput("Tier1 ratio (<): ");
-                double s1 = InputValidator<double>::getInput("Tier1 surge: ");
-                double r2 = InputValidator<double>::getInput("Tier2 ratio (<): ");
-                double s2 = InputValidator<double>::getInput("Tier2 surge: ");
-                double r3 = InputValidator<double>::getInput("Tier3 ratio (<): ");
-                double s3 = InputValidator<double>::getInput("Tier3 surge: ");
+                double r1 = InputValidator<double>::getInput("Tier1 ratio (key: demand_tier1_ratio): ");
+                double s1 = InputValidator<double>::getInput("Tier1 surge (key: demand_tier1_surge): ");
+                double r2 = InputValidator<double>::getInput("Tier2 ratio (key: demand_tier2_ratio): ");
+                double s2 = InputValidator<double>::getInput("Tier2 surge (key: demand_tier2_surge): ");
+                double r3 = InputValidator<double>::getInput("Tier3 ratio (key: demand_tier3_ratio): ");
+                double s3 = InputValidator<double>::getInput("Tier3 surge (key: demand_tier3_surge): ");
 
                 bool ratiosOk = (r1 >= 0.05 && r1 <= 3.0) && (r2 >= 0.05 && r2 <= 3.0) && (r3 >= 0.05 && r3 <= 3.0) && (r1 < r2 && r2 < r3);
                 bool surgeOk = (s1 >= 0.0 && s1 <= 1.0) && (s2 >= 0.0 && s2 <= 1.0) && (s3 >= 0.0 && s3 <= 1.0);
@@ -1543,7 +2386,8 @@ double getTrafficFactor(string locName)
             }
             else if (ch == 5)
             {
-                double cap = InputValidator<double>::getInput("Max total surge (additional): ");
+                cout << "Current value - (max_total_surge) = " << pricing.maxTotalSurge << "\n";
+                double cap = InputValidator<double>::getInput("Max total surge (key: max_total_surge): ");
                 if (cap < 0 || cap > 3.0)
                 {
                     cout << "Invalid cap. Must be between 0.0 and 3.0.\n";
@@ -1554,6 +2398,12 @@ double getTrafficFactor(string locName)
                 cout << "Max surge cap updated.\n";
             }
             else if (ch == 6)
+            {
+                pricing.dynamicPricingEnabled = !pricing.dynamicPricingEnabled;
+                savePricingConfig();
+                cout << "Dynamic Pricing is now " << (pricing.dynamicPricingEnabled ? "ENABLED" : "DISABLED") << ".\n";
+            }
+            else if (ch == 7)
             {
                 break;
             }
@@ -1626,7 +2476,7 @@ double getTrafficFactor(string locName)
                 bool found = false;
                 for (auto &t : trafficData)
                 {
-                    if (t.location == loc && t.hour == hour && t.year == y && t.month == m && t.day == d)
+                    if (normalizeKey(t.location) == normalizeKey(loc) && t.hour == hour && t.year == y && t.month == m && t.day == d)
                     {
                         t.factor = factor;
                         found = true;
@@ -1642,7 +2492,7 @@ double getTrafficFactor(string locName)
             {
                 break;
             }
-            else if (ch == 4)
+            else
             {
                 cout << "Invalid choice.\n";
             }
@@ -1711,7 +2561,7 @@ double getTrafficFactor(string locName)
                 bool found = false;
                 for (auto &w : weatherData)
                 {
-                    if (w.location == loc && w.hour == hour && w.year == y && w.month == m && w.day == d)
+                    if (normalizeKey(w.location) == normalizeKey(loc) && w.hour == hour && w.year == y && w.month == m && w.day == d)
                     {
                         w.factor = factor;
                         found = true;
@@ -1728,7 +2578,7 @@ double getTrafficFactor(string locName)
                 system("cls");
                 break;
             }
-            else if (ch == 4)
+            else
             {
                 cout << "Invalid choice.\n";
             }
@@ -1747,7 +2597,8 @@ double getTrafficFactor(string locName)
             cout << "5. List Users\n";
             cout << "6. List Drivers\n";
             cout << "7. Edit Pricing Logic\n";
-            cout << "8. Back\n";
+            cout << "8. View Demand Heatmap\n";
+            cout << "9. Back\n";
 
             int ch = InputValidator<int>::getInput("Choice: ");
             if (ch == 1)
@@ -1780,6 +2631,10 @@ double getTrafficFactor(string locName)
             }
             else if (ch == 8)
             {
+                viewHeatmap();
+            }
+            else if (ch == 9)
+            {
                 system("cls");
                 break;
             }
@@ -1793,6 +2648,21 @@ double getTrafficFactor(string locName)
 public:
     RideShareSystem()
     {
+        // SYNC LIVE DATA AT STARTUP (OPTIONAL)
+        system("cls");
+        cout << "===========================================\n";
+        cout << "   DHAKA BASED RIDE SHARING SYSTEM \n";
+        cout << "===========================================\n\n";
+        cout << "Would you like to sync live traffic & weather data? (Slow)\n";
+        cout << "1. Yes (Sync now)\n";
+        cout << "2. No  (Use cached data)\n";
+        int syncChoice = InputValidator<int>::getInput("Choice: ");
+        
+        if (syncChoice == 1) {
+            cout << "Syncing... Please wait (this may take a few minutes)\n";
+            system("python live_updater.py sync");
+        }
+        
         loadLocations();
         loadPricingConfig();
         loadUsers();
@@ -1928,6 +2798,7 @@ public:
         cout << "2. CNG\n";
         cout << "3. UberX\n";
         cout << "4. Premium\n";
+        cout << "5. Intercity\n";
         int v = InputValidator<int>::getInput("Choose vehicle: ");
 
         Vehicle *vehicle = nullptr;
@@ -1936,6 +2807,7 @@ public:
         else if (v == 2) vehicle = new CNG();
         else if (v == 3) vehicle = new UberX();
         else if (v == 4) vehicle = new Premium();
+        else if (v == 5) vehicle = new Intercity();
         
         if (!vehicle)
         {
@@ -1977,17 +2849,24 @@ int main()
             cout << "3. User Signup\n";
             cout << "4. Driver Signup\n";
             cout << "5. Admin Login\n";
-            cout << "6. Exit\n";
+            cout << "6. View System Map\n";
+            cout << "7. Exit\n";
 
             int mainChoice = InputValidator<int>::getInput("Choice: ");
 
-            if (mainChoice == 6)
+            if (mainChoice == 7)
             {
                 app.saveAll();
                 cout << "Goodbye!\n";
                 system("cls");
                 break;
-                }
+            }
+
+            if (mainChoice == 6)
+            {
+                app.viewSystemMap();
+                continue;
+            }
 
             if (mainChoice == 3)
             {
@@ -1997,6 +2876,7 @@ int main()
 
             if (mainChoice == 4)
             {
+
                 app.signupDriver();
                 continue;
             }

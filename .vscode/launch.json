@@ -2,29 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run main.cpp",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${fileDirname}",
-      "environment": [],
-      "externalConsole": false,
-      "console": "integratedTerminal",
-      "MIMode": "gdb",
-      "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
-      "preLaunchTask": "C/C++: g++.exe build active file"
-    },
-    {
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/mini ride sharing",
-      "program": "c:/mini ride sharing/build/Debug/outDebug",
+      "cwd": "c:/dsa_project_folder",
+      "program": "c:/dsa_project_folder/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

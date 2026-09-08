@@ -1,62 +1,24 @@
-Agargaon,2026,5,7,5,1.0
-Airport,2026,5,7,5,1.0
-Badda,2026,5,7,5,1.0
-Banani,2026,5,7,5,1.0
-Bangshal,2026,5,7,5,1.0
-Baridhara,2026,5,7,5,1.0
-Bashundhara,2026,5,7,5,1.0
-Bijoynagar,2026,5,7,5,1.0
-Chawk Bazar,2026,5,7,5,1.0
-DOHS Mohakhali,2026,5,7,5,1.0
-Demra,2026,5,7,5,1.0
-Dhanmondi,2026,5,7,5,1.0
-Elephant Road,2026,5,7,5,1.0
-Eskaton,2026,5,7,5,1.0
-Farmgate,2026,5,7,5,1.0
-Gabtoli,2026,5,7,5,1.0
-Green Road,2026,5,7,5,1.0
-Gulshan-1,2026,5,7,5,1.0
-Gulshan-2,2026,5,7,5,1.0
-Hatirpool,2026,5,7,5,1.0
-Hazaribagh,2026,5,7,5,1.0
-Islampur,2026,5,7,5,1.0
-Jatrabari,2026,5,7,5,1.0
-Kakrail,2026,5,7,5,1.0
-Kallyanpur,2026,5,7,5,1.0
-Kamalapur,2026,5,7,5,1.0
-Karwan Bazar,2026,5,7,5,1.0
-Kazipara,2026,5,7,5,1.0
-Keraniganj,2026,5,7,5,1.0
-Khilkhet,2026,5,7,5,1.0
-Kuril,2026,5,7,5,1.0
-Lalbagh,2026,5,7,5,1.0
-Malibagh,2026,5,7,5,1.0
-Mirpur-1,2026,5,7,5,1.0
-Mirpur-10,2026,5,7,5,1.0
-Mirpur-12,2026,5,7,5,1.0
-Moghbazar,2026,5,7,5,1.0
-Mohammadpur,2026,5,7,5,1.0
-Mohakhali,2026,5,7,5,1.0
-Motijheel,2026,5,7,5,1.0
-Nakhalpara,2026,5,7,5,1.0
-New Market,2026,5,7,5,1.0
-Nikunja,2026,5,7,5,1.0
-Pallabi,2026,5,7,5,1.0
-Paltan,2026,5,7,5,1.0
-Panthapath,2026,5,7,5,1.0
-Postogola,2026,5,7,5,1.0
-Ramna,2026,5,7,5,1.0
-Rampura,2026,5,7,5,1.0
-Sadarghat,2026,5,7,5,1.0
-Science Lab,2026,5,7,5,1.0
-Shahbagh,2026,5,7,5,1.0
-Shewrapara,2026,5,7,5,1.0
-Shyampur,2026,5,7,5,1.0
-Sutrapur,2026,5,7,5,1.0
-Tejgaon,2026,5,7,5,1.0
-Uttara-1,2026,5,7,5,1.0
-Uttara-3,2026,5,7,5,1.0
-Uttara-7,2026,5,7,5,1.0
-Wari,2026,5,7,5,1.0
-Tongi - Dhaka Division - Bangladesh,2026,5,7,5,1.0
-Abdullāhpur - Dhaka Division - Bangladesh,2026,5,7,5,1.0
+0,Low,1.00
+1,Low,1.02
+2,Low,1.05
+3,Low,1.08
+4,Low,1.10
+5,Low,1.12
+6,Mid,1.18
+7,Mid,1.22
+8,High,1.32
+9,High,1.35
+10,Mid,1.24
+11,Mid,1.20
+12,Mid,1.18
+13,Mid,1.22
+14,Mid,1.26
+15,Mid,1.30
+16,High,1.38
+17,High,1.40
+18,High,1.42
+19,High,1.36
+20,Mid,1.28
+21,Mid,1.20
+22,Low,1.10
+23,Low,1.05

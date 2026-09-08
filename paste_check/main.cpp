@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <cmath>
+#include <cctype>
 #include <conio.h>
 #include <ctime>
 #include <fstream>
@@ -6,10 +9,11 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <vector>
 #include "dsa.hpp"
 
 using namespace std;
-
+using namespace dsa;
 struct Location
 {
     string name;
@@ -233,7 +237,7 @@ class RideShareSystem
     string lowerCopy(string text) const
     {
         for (char &c : text)
-            c = dsa::toLower(c);
+            c = tolower(c);
         return text;
     }
 
@@ -251,9 +255,9 @@ class RideShareSystem
         return out;
     }
 
-    dsa::Vector<string> splitCsv(const string &line) const
+    vector<string> splitCsv(const string &line) const
     {
-        dsa::Vector<string> parts;
+        vector<string> parts;
         string item;
         stringstream ss(line);
         while (getline(ss, item, ',')) parts.push_back(item);
@@ -264,7 +268,7 @@ class RideShareSystem
     {
         double dx = lat1 - lat2;
         double dy = lon1 - lon2;
-        return dsa::sqrtNumber(dx * dx + dy * dy) * 111.0;
+        return sqrt(dx * dx + dy * dy) * 111.0;
     }
 
     int currentHour() const
@@ -291,13 +295,12 @@ class RideShareSystem
     bool isValidLocPair(int from, int to) const { return isValidLocIdx(from) && isValidLocIdx(to) && from != to; }
     bool usernameTaken(const string &name) const { return userExists(name) || driverExists(name) || name == "admin"; }
 
-    dsa::Vector<size_t> reconstructPath(const dsa::Vector<int> &parent, size_t goal) const
+    vector<size_t> reconstructPath(const vector<int> &parent, size_t goal) const
     {
-        dsa::Vector<size_t> path;
+        vector<size_t> path;
         for (int cur = goal; cur != -1; cur = parent[cur])
             path.push_back(cur);
-        for (size_t i = 0; i < path.size() / 2; ++i)
-            swap(path[i], path[path.size() - 1 - i]);
+        reverse(path.begin(), path.end());
         return path;
     }
 
@@ -306,10 +309,9 @@ class RideShareSystem
         auto addIfMissing = [&](size_t from, size_t to)
         {
             auto &adj = routeGraph[from];
-            bool exists = false;
-            for (size_t i = 0; i < adj.size(); ++i)
-                if (adj[i].first == to) { exists = true; break; }
-            if (!exists) adj.push_back({to, d});
+            if (find_if(adj.begin(), adj.end(), [to](const pair<size_t, double> &p)
+                        { return p.first == to; }) == adj.end())
+                adj.push_back({to, d});
         };
         addIfMissing(i, j);
         addIfMissing(j, i);
@@ -432,7 +434,7 @@ class RideShareSystem
         if (fromIdx < 0 || toIdx < 0)
             return calcDistance(from, to);
         double dist = dijkstraDistance(fromIdx, toIdx);
-        return dsa::isFinite(dist) ? dist : calcDistance(from, to);
+        return isfinite(dist) ? dist : calcDistance(from, to);
     }
 
     void loadLocations()
@@ -446,7 +448,7 @@ class RideShareSystem
         {
             if (line.empty())
                 continue;
-            dsa::Vector<string> cols = splitCsv(line);
+            vector<string> cols = splitCsv(line);
             if (cols.size() < 3)
                 continue;
             try
@@ -482,7 +484,7 @@ class RideShareSystem
         {
             if (line.empty())
                 continue;
-            dsa::Vector<string> cols = splitCsv(line);
+            vector<string> cols = splitCsv(line);
             if (cols.size() < 3)
                 continue;
             try
@@ -520,7 +522,7 @@ class RideShareSystem
         {
             if (line.empty())
                 continue;
-            dsa::Vector<string> cols = splitCsv(line);
+            vector<string> cols = splitCsv(line);
             if (cols.size() < 9)
                 continue;
             try
@@ -558,7 +560,7 @@ class RideShareSystem
         {
             if (line.empty())
                 continue;
-            dsa::Vector<string> cols = splitCsv(line);
+            vector<string> cols = splitCsv(line);
             try
             {
                 int hour = stoi(cols[0]);
@@ -603,7 +605,7 @@ class RideShareSystem
         {
             if (line.empty())
                 continue;
-            dsa::Vector<string> cols = splitCsv(line);
+            vector<string> cols = splitCsv(line);
             if (cols.size() < 9)
                 continue;
             try
@@ -654,7 +656,7 @@ class RideShareSystem
 
     int countAvailableDrivers(const string &vehicleType) const
     {
-        return static_cast<int>(dsa::countIf(drivers.begin(), drivers.end(), [&](const Driver &d)
+        return static_cast<int>(count_if(drivers.begin(), drivers.end(), [&](const Driver &d)
                                          { return d.getVehicleType() == vehicleType && d.isAvailable(); }));
     }
 
@@ -667,17 +669,17 @@ class RideShareSystem
         else if (vehicleType == "CNG") { base = 125; perKm = 28.4; }
         else if (vehicleType == "UberX") { base = 331; perKm = 22.6; }
         else if (vehicleType == "Intercity") { base = 127.16; perKm = 30.70; }
-        int hour = dsa::maxValue(0, dsa::minValue(23, requestHour));
+        int hour = max(0, min(23, requestHour));
         double traffic = profileFactor(trafficData, hour);
         double weather = profileFactor(weatherData, hour);
-        double trafficSurge = dsa::maxValue(0.0, traffic - 1.0) * pricing.trafficWeight;
-        double weatherSurge = dsa::maxValue(0.0, weather - 1.0) * pricing.weatherWeight;
+        double trafficSurge = max(0.0, traffic - 1.0) * pricing.trafficWeight;
+        double weatherSurge = max(0.0, weather - 1.0) * pricing.weatherWeight;
         double demandSurge = demandSurgeForLocation(availableDrivers, activeUsers);
         double total = trafficSurge + weatherSurge + demandSurge;
         if (!pricing.dynamicPricingEnabled)
             total = 0.0;
-        total = dsa::minValue(dsa::maxValue(total, 0.0), pricing.maxTotalSurge);
-        return dsa::roundNumber((base + distance * perKm) * (1.0 + total) * 100.0) / 100.0;
+        total = min(max(total, 0.0), pricing.maxTotalSurge);
+        return round((base + distance * perKm) * (1.0 + total) * 100.0) / 100.0;
     }
 
     void printShortestPath(const dsa::Vector<size_t> &path) const
@@ -755,7 +757,7 @@ class RideShareSystem
             cout << (forUser ? "No trips yet.\n" : "No rides yet.\n");
     }
 
-    dsa::Vector<size_t> rankDriversForRequest(const Location &from, const string &vehicleType)
+    vector<size_t> rankDriversForRequest(const Location &from, const string &vehicleType)
     {
         dsa::Vector<size_t> *bucket = driverBucketsByVehicle.find(vehicleType);
         if (!bucket)
@@ -782,7 +784,7 @@ class RideShareSystem
             double distance = locIdx >= 0 ? shortestRouteDistance(locations[locIdx], from) : numeric_limits<double>::infinity();
             pq.push({idx, distance, drivers[idx].getAvgRating(), drivers[idx].getTripCount()});
         }
-        dsa::Vector<size_t> ordered;
+        vector<size_t> ordered;
         while (!pq.empty())
         {
             ordered.push_back(pq.top().index);
@@ -810,7 +812,7 @@ class RideShareSystem
         Location to = locations[toI - 1];
         
 
-        dsa::Vector<size_t> orderedDrivers = rankDriversForRequest(from, vehicle->name());
+        vector<size_t> orderedDrivers = rankDriversForRequest(from, vehicle->name());
         if (orderedDrivers.empty())
         {
             cout << "No driver available for this vehicle right now.\n";
@@ -984,7 +986,7 @@ class RideShareSystem
         {
             if (path.empty())
                 return;
-            int remaining = dsa::maxValue(1, static_cast<int>(dsa::ceilNumber(minutes)));
+            int remaining = max(1, static_cast<int>(ceil(minutes)));
             cout << phase << " route: ";
             for (size_t k = 0; k < path.size(); ++k)
                 cout << locations[path[k]].name << (k + 1 < path.size() ? " -> " : "\n");
@@ -1117,25 +1119,16 @@ class RideShareSystem
             cout << "\n--- USER MENU (" << u.getUsername() << ") ---\n";
             cout << "1. Request a Ride\n2. Your trips\n3. Route Summary\n4. Driver Leaderboard\n5. Logout\n";
             int choice = getInt("Choice: ");
-            switch (choice)
-            {
-            case 1:
+            if (choice == 1)
                 requestRide(u);
-                break;
-            case 2:
+            else if (choice == 2)
                 showRideHistory(u.getUsername(), true);
-                break;
-            case 3:
+            else if (choice == 3)
                 interactiveRouteSummary();
-                break;
-            case 4:
+            else if (choice == 4)
                 showDriverLeaderboard();
+            else if (choice == 5)
                 break;
-            case 5:
-                break;
-            default:
-                cout << "Invalid choice.\n";
-            }
         }
     }
 
@@ -1146,37 +1139,27 @@ class RideShareSystem
             cout << "\n--- DRIVER MENU (" << d.getUsername() << ") ---\n";
             cout << "1. View Ride History\n2. Toggle Availability\n3. View Stats\n4. Route Summary\n5. Leaderboard\n6. Logout\n";
             int choice = getInt("Choice: ");
-            switch (choice)
-            {
-            case 1:
+            if (choice == 1)
                 showRideHistory(d.getUsername(), false);
-                break;
-            case 2:
+            else if (choice == 2)
             {
                 d.setAvailable(!d.isAvailable());
                 saveDrivers();
-                break;
             }
-            case 3:
+            else if (choice == 3)
             {
                 cout << "Vehicle: " << d.getVehicleType() << '\n'
                      << "Location: " << d.getLocation() << '\n'
                      << "Rating: " << d.getAvgRating() << '\n'
                      << "Trips: " << d.getTripCount() << '\n'
                      << "Earning: " << d.getTotalEarn() << '\n';
-                break;
             }
-            case 4:
+            else if (choice == 4)
                 interactiveRouteSummary();
-                break;
-            case 5:
+            else if (choice == 5)
                 showDriverLeaderboard();
+            else if (choice == 6)
                 break;
-            case 6:
-                break;
-            default:
-                cout << "Invalid choice.\n";
-            }
         }
     }
 
@@ -1305,34 +1288,22 @@ public:
         {
             cout << "\n--- ADMIN MENU ---\n1. Dashboard & Summary\n2. Users List\n3. Drivers List\n4. Search User by ID (BST)\n5. Recent Rides (Stack)\n6. Driver Leaderboard\n7. Route Summary\n8. Back\n";
             int choice = getInt("Choice: ");
-            switch (choice)
-            {
-            case 1:
+            if (choice == 1)
                 adminShowSummary();
-                break;
-            case 2:
+            else if (choice == 2)
                 adminListUsers();
-                break;
-            case 3:
+            else if (choice == 3)
                 adminListDrivers();
-                break;
-            case 4:
+            else if (choice == 4)
                 adminSearchUserByID();
-                break;
-            case 5:
+            else if (choice == 5)
                 adminRecentRides();
-                break;
-            case 6:
+            else if (choice == 6)
                 showDriverLeaderboard();
-                break;
-            case 7:
+            else if (choice == 7)
                 interactiveRouteSummary();
+            else if (choice == 8)
                 break;
-            case 8:
-                break;
-            default:
-                cout << "Invalid choice.\n";
-            }
         }
     }
 };
@@ -1373,5 +1344,4 @@ int main()
     }
     return 0;
 }
-
 

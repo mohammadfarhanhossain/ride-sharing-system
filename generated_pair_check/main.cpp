@@ -226,7 +226,7 @@ class RideShareSystem
     dsa::BST<string, size_t> locationBST;
     dsa::BST<int, size_t> userIdBST;
     RideStack rideActivityStack;
-    dsa::Vector<dsa::Vector<pair<size_t, double>>> routeGraph;
+    dsa::Graph routeGraph;
     Admin admin;
     PricingConfig pricing;
 

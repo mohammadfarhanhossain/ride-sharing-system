@@ -9,29 +9,29 @@
 
 namespace dsa
 {
-    inline char toLower(char c)
+    char toLower(char c)
     {
         return (c >= 'A' && c <= 'Z') ? char(c + ('a' - 'A')) : c;
     }
 
-    inline double roundNumber(double value)
+    double roundNumber(double value)
     {
         return value >= 0 ? static_cast<long long>(value + 0.5) : static_cast<long long>(value - 0.5);
     }
 
-    inline double ceilNumber(double value)
+    double ceilNumber(double value)
     {
         long long whole = static_cast<long long>(value);
         return value > whole ? whole + 1.0 : static_cast<double>(whole);
     }
 
-    inline bool isFinite(double value)
+    bool isFinite(double value)
     {
         return value != std::numeric_limits<double>::infinity() &&
                value != -std::numeric_limits<double>::infinity();
     }
 
-    inline double sqrtNumber(double value)
+    double sqrtNumber(double value)
     {
         if (value <= 0) return 0;
         double guess = value > 1 ? value : 1;
@@ -66,7 +66,7 @@ namespace dsa
     public:
         Vector() : data(nullptr), cap(0), sz(0) {}
 
-        explicit Vector(size_t count, const T &val = T()) : data(nullptr), cap(count), sz(count)
+        Vector(size_t count, const T &val = T()) : data(nullptr), cap(count), sz(count)
         {
             if (count > 0)
             {
@@ -153,6 +153,8 @@ namespace dsa
         }
     };
 
+    using Graph = Vector<Vector<std::pair<size_t, double>>>;
+
     template <typename T, typename Predicate>
     size_t countIf(const T *begin, const T *end, Predicate condition)
     {
@@ -192,18 +194,17 @@ namespace dsa
         Node(const T &val) : data(val), next(nullptr) {}
     };
 
-    template <typename T>
-    class Queue
+    class LocationQueue
     {
     private:
-        Node<T> *frontNode;
-        Node<T> *rearNode;
+        Node<size_t> *frontNode;
+        Node<size_t> *rearNode;
         size_t count;
 
     public:
-        Queue() : frontNode(nullptr), rearNode(nullptr), count(0) {}
+        LocationQueue() : frontNode(nullptr), rearNode(nullptr), count(0) {}
 
-        ~Queue() { clear(); }
+        ~LocationQueue() { clear(); }
 
         void clear()
         {
@@ -211,9 +212,9 @@ namespace dsa
                 pop();
         }
 
-        void push(const T &val)
+        void push(size_t val)
         {
-            Node<T> *newNode = new Node<T>(val);
+            Node<size_t> *newNode = new Node<size_t>(val);
             if (!rearNode)
             {
                 frontNode = rearNode = newNode;
@@ -229,23 +230,20 @@ namespace dsa
         void pop()
         {
             if (!frontNode) return;
-            Node<T> *temp = frontNode;
+            Node<size_t> *temp = frontNode;
             frontNode = frontNode->next;
             if (!frontNode) rearNode = nullptr;
             delete temp;
             --count;
         }
 
-        T &front() { return frontNode->data; }
-        const T &front() const { return frontNode->data; }
+        size_t &front() { return frontNode->data; }
+        const size_t &front() const { return frontNode->data; }
 
         bool empty() const { return count == 0; }
         size_t size() const { return count; }
 
     };
-
-    // This project uses the queue for graph locations (BFS).
-    using LocationQueue = Queue<size_t>;
 
     // ==========================================
     // 3. TEMPLATE LINKED LIST BASED STACK
@@ -451,8 +449,7 @@ namespace dsa
     // ==========================================
     // 6. GRAPH ALGORITHMS (Dijkstra, BFS, DFS)
     // ==========================================
-    template <typename GraphType>
-    Vector<size_t> dijkstraPath(const GraphType &graph, size_t numNodes, size_t start, size_t goal, double trafficMul, double weatherMul, double &distanceKm)
+    Vector<size_t> dijkstraPath(const Graph &graph, size_t numNodes, size_t start, size_t goal, double trafficMul, double weatherMul, double &distanceKm)
     {
         distanceKm = 0.0;
         Vector<double> dist(numNodes, std::numeric_limits<double>::infinity());
@@ -513,8 +510,7 @@ namespace dsa
         return path;
     }
 
-    template <typename GraphType>
-    Vector<size_t> bfsPath(const GraphType &graph, size_t numNodes, size_t start, size_t goal)
+    Vector<size_t> bfsPath(const Graph &graph, size_t numNodes, size_t start, size_t goal)
     {
         Vector<int> parent(numNodes, -1);
         Vector<bool> visited(numNodes, false);
@@ -553,8 +549,7 @@ namespace dsa
         return path;
     }
 
-    template <typename GraphType>
-    bool dfsReachableHelper(const GraphType &graph, size_t current, size_t goal, Vector<bool> &visited)
+    bool dfsReachableHelper(const Graph &graph, size_t current, size_t goal, Vector<bool> &visited)
     {
         if (current == goal) return true;
         visited[current] = true;
@@ -569,15 +564,13 @@ namespace dsa
         return false;
     }
 
-    template <typename GraphType>
-    bool dfsReachable(const GraphType &graph, size_t numNodes, size_t start, size_t goal)
+    bool dfsReachable(const Graph &graph, size_t numNodes, size_t start, size_t goal)
     {
         Vector<bool> visited(numNodes, false);
         return dfsReachableHelper(graph, start, goal, visited);
     }
 
-    template <typename GraphType>
-    bool dfsPathHelper(const GraphType &graph, size_t current, size_t goal, Vector<bool> &visited, Vector<size_t> &path)
+    bool dfsPathHelper(const Graph &graph, size_t current, size_t goal, Vector<bool> &visited, Vector<size_t> &path)
     {
         visited[current] = true;
         path.push_back(current);
@@ -588,8 +581,7 @@ namespace dsa
         return false;
     }
 
-    template <typename GraphType>
-    Vector<size_t> dfsPath(const GraphType &graph, size_t numNodes, size_t start, size_t goal)
+    Vector<size_t> dfsPath(const Graph &graph, size_t numNodes, size_t start, size_t goal)
     {
         Vector<bool> visited(numNodes, false);
         Vector<size_t> path;
@@ -605,7 +597,7 @@ namespace dsa
         size_t count;
         size_t bucketIndex(const Key &key) const { return std::hash<Key>{}(key) % buckets.size(); }
     public:
-        explicit HashMap(size_t bucketCount = 101) : buckets(bucketCount, nullptr), count(0) {}
+        HashMap(size_t bucketCount = 101) : buckets(bucketCount, nullptr), count(0) {}
         ~HashMap() { clear(); }
         void clear() { for (size_t i=0;i<buckets.size();++i){ Entry *p=buckets[i]; while(p){Entry *n=p->next; delete p; p=n;} buckets[i]=nullptr;} count=0; }
         void insert(const Key &key, const Value &value) { size_t i=bucketIndex(key); for(Entry *p=buckets[i];p;p=p->next) if(p->key==key){p->value=value;return;} buckets[i]=new Entry(key,value,buckets[i]); ++count; }
